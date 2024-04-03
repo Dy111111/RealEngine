@@ -1,0 +1,7 @@
+#目录
+RealEngine/.vs/
+RealEngine/bin/
+RealEngine/bin-int/
+
+#文件
+*.user
