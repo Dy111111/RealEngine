@@ -1,6 +1,7 @@
 #目录
 RealEngine/.vs/
 RealEngine/bin/
+RealEngine/vendor/
 RealEngine/bin-int/
 
 #文件
