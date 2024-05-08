@@ -1,0 +1,9 @@
+[submodule "RealEngine/vendor/spdlog"]
+	path = RealEngine/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "RealEngine/vendor/GLFW"]
+	path = RealEngine/vendor/GLFW
+	url = https://github.com/Dy111111/glfw
+[submodule "RealEngine/vendor/RealEngine/vendor/imgui"]
+	path = RealEngine/vendor/RealEngine/vendor/imgui
+	url = https://github.com/Dy111111/imgui
