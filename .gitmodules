@@ -7,3 +7,6 @@
 [submodule "RealEngine/vendor/RealEngine/vendor/imgui"]
 	path = RealEngine/vendor/RealEngine/vendor/imgui
 	url = https://github.com/Dy111111/imgui
+[submodule "RealEngine/vendor/imgui"]
+	path = RealEngine/vendor/imgui
+	url = https://github.com/Dy111111/imgui
