@@ -1,10 +1,15 @@
 #pragma once
 #ifdef RE_PLATFORM_WINDOWS
+#if RE_DYNAMIC_LINK
 	#ifdef RE_BUILD_DLL
 		#define REAL_API __declspec(dllexport)
 	#else
 		#define REAL_API __declspec(dllimport)
 	#endif
+#else
+	#define REAL_API
+#endif
+
 #else
 	#error Real only support windows!
 #endif

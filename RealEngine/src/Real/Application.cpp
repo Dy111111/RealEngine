@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Real/Log.h"
 #include <glad/glad.h>
+#include"Input.h"
 namespace Real {
 	Application* Application::s_Instance = nullptr;
 	Application::Application() {
@@ -11,6 +12,8 @@ namespace Real {
 		m_Window->SetEventCallback([this](Event& event) {
 			this->OnEvent(event);
 			});
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	};
 	Application::~Application() {};
 	void Application::PushLayer(Layer* layer)
@@ -44,6 +47,11 @@ namespace Real {
 			glClear(GL_COLOR_BUFFER_BIT);
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
+
 			m_Window->OnUpdate();
 		}
 	}

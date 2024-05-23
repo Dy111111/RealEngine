@@ -1,12 +1,12 @@
 workspace "RealEngine"
 	architecture "x64"
-
+	startproject "Sandbox"
 	configurations{
 		"Debug",
 		"Release",
 		"Dist"
 	}
-	startproject "Sandbox"
+	
 outputdir="%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
@@ -14,18 +14,19 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "RealEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "RealEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "RealEngine/vendor/imgui"
+IncludeDir["glm"] = "RealEngine/vendor/glm"
 
 include "RealEngine/vendor/GLFW"
 include "RealEngine/vendor/Glad"
 include "RealEngine/vendor/imgui"
 
 
-
 project "RealEngine"
 	location "RealEngine"
-	kind "SharedLib"
-	language "c++"
-	staticruntime "off"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir("bin/" ..outputdir.."/%{prj.name}")
 	objdir("bin-int/" ..outputdir.."/%{prj.name}")
@@ -36,13 +37,21 @@ project "RealEngine"
 	files{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
+	}
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
 	}
 	includedirs{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 	links{
 		"GLFW",
@@ -51,7 +60,6 @@ project "RealEngine"
 		"opengl32.lib"
 	}
 	filter "system:windows"
-		cppdialect "c++17"
 		systemversion "latest"
 
 		defines
@@ -61,31 +69,29 @@ project "RealEngine"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
-		}
 
 	filter "configurations:Debug"
 		defines "RE_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RE_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "RE_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
-	language "c++"
-	staticruntime "off"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir("bin/" ..outputdir.."/%{prj.name}")
 	objdir("bin-int/" ..outputdir.."/%{prj.name}")
@@ -96,18 +102,20 @@ project "Sandbox"
 	}
 	includedirs{
 		"RealEngine/vendor/spdlog/include",
-		"RealEngine/src"
+		"RealEngine/src",
+		"RealEngine/vendor",
+		"%{IncludeDir.glm}"
 	}
 	links{
 		"RealEngine"
 	}
 	filter "system:windows"
-		cppdialect "c++17"
 		systemversion "latest"
 
 		defines
 		{
-			"RE_PLATFORM_WINDOWS"
+			"RE_PLATFORM_WINDOWS",
+			"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
 		}
 
 		 
@@ -115,16 +123,16 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "RE_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RE_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "RE_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	

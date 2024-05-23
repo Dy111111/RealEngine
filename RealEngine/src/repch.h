@@ -1,7 +1,4 @@
 #pragma once
-#ifdef RE_PLATFORM_WINDOWS
-	#include<Windows.h>
-#endif
 
 #include <iostream>
 #include <memory>
@@ -16,3 +13,6 @@
 #include <unordered_set>
 
 #include "Real/Log.h"
+#ifdef RE_PLATFORM_WINDOWS
+#include<Windows.h>
+#endif

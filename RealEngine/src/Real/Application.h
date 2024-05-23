@@ -3,6 +3,7 @@
 #include"Real/LayerStack.h"
 #include"Real/Events/Event.h"
 #include"Real/Events/ApplicationEvent.h"
+#include"Real/ImGui/ImGuiLayer.h"
 
 #include"Window.h"
 namespace Real {
@@ -22,6 +23,7 @@ namespace Real {
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 	private:
