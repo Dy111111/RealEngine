@@ -63,46 +63,46 @@
     <ClInclude Include="src\Real.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Application.h">
+    <ClInclude Include="src\Real\Core\Application.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Core.h">
+    <ClInclude Include="src\Real\Core\Core.h">
       <Filter>src\Real</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\EntryPoint.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Events\ApplicationEvent.h">
+    <ClInclude Include="src\Real\Core\Events\ApplicationEvent.h">
       <Filter>src\Real\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Events\Event.h">
+    <ClInclude Include="src\Real\Core\Events\Event.h">
       <Filter>src\Real\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Events\KeyEvent.h">
+    <ClInclude Include="src\Real\Core\Events\KeyEvent.h">
       <Filter>src\Real\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Events\MouseEvent.h">
+    <ClInclude Include="src\Real\Core\Events\MouseEvent.h">
       <Filter>src\Real\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\ImGui\ImGuiLayer.h">
       <Filter>src\Real\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Input.h">
+    <ClInclude Include="src\Real\Core\Input.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\KeyCodes.h">
+    <ClInclude Include="src\Real\Core\KeyCodes.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Layer.h">
+    <ClInclude Include="src\Real\Core\Layer.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\LayerStack.h">
+    <ClInclude Include="src\Real\Core\LayerStack.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Log.h">
+    <ClInclude Include="src\Real\Core\Log.h">
       <Filter>src\Real</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\MouseButtonCodes.h">
+    <ClInclude Include="src\Real\Core\MouseButtonCodes.h">
       <Filter>src\Real</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Renderer\Buffer.h">
@@ -117,7 +117,7 @@
     <ClInclude Include="src\Real\Renderer\Shader.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Window.h">
+    <ClInclude Include="src\Real\Core\Window.h">
       <Filter>src\Real</Filter>
     </ClInclude>
     <ClInclude Include="src\repch.h">
@@ -1392,7 +1392,7 @@
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Application.cpp">
+    <ClCompile Include="src\Real\Core\Application.cpp">
       <Filter>src\Real</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\ImGui\ImGuiBuild.cpp">
@@ -1401,13 +1401,13 @@
     <ClCompile Include="src\Real\ImGui\ImGuiLayer.cpp">
       <Filter>src\Real\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Layer.cpp">
+    <ClCompile Include="src\Real\Core\Layer.cpp">
       <Filter>src\Real</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\LayerStack.cpp">
+    <ClCompile Include="src\Real\Core\LayerStack.cpp">
       <Filter>src\Real</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Log.cpp">
+    <ClCompile Include="src\Real\Core\Log.cpp">
       <Filter>src\Real</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Renderer\Buffer.cpp">

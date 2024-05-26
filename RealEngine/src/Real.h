@@ -1,12 +1,12 @@
 #pragma once
 //为应用该引擎的程序准备的
-#include"Real/Application.h"
-#include"Real/Layer.h"
-#include"Real/Log.h"
+#include"Real/Core/Application.h"
+#include"Real/Core/Layer.h"
+#include"Real/Core/Log.h"
 #include "Real/Core/Timestep.h"
-#include "Real/Input.h"
-#include "Real/KeyCodes.h"
-#include "Real/MouseButtonCodes.h"
+#include "Real/Core/Input.h"
+#include "Real/Core/KeyCodes.h"
+#include "Real/Core/MouseButtonCodes.h"
 
 #include "Real/ImGui/ImGuiLayer.h"
 

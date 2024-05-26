@@ -1,9 +1,9 @@
 #include "repch.h"
 #include "WindowsWindow.h"
 
-#include"Real/Events/ApplicationEvent.h"
-#include"Real/Events/MouseEvent.h"
-#include"Real/Events/KeyEvent.h"
+#include"Real/Core/Events/ApplicationEvent.h"
+#include"Real/Core/Events/MouseEvent.h"
+#include"Real/Core/Events/KeyEvent.h"
 
 #include"Platform/OpenGL/OpenGLContext.h"
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Real/Layer.h"
-#include "Real/Events/ApplicationEvent.h"
-#include "Real/Events/KeyEvent.h"
-#include "Real/Events/MouseEvent.h"
+#include "Real/Core/Layer.h"
+#include "Real/Core/Events/ApplicationEvent.h"
+#include "Real/Core/Events/KeyEvent.h"
+#include "Real/Core/Events/MouseEvent.h"
 
 namespace Real {
 
