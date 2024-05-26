@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Real/Window.h"
-
+#include"Real/Renderer/GraphicsContext.h"
 #include <GLFW/glfw3.h>
 
 namespace Real {
@@ -27,6 +27,7 @@ namespace Real {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 
 		struct WindowData
 		{

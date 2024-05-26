@@ -1,11 +1,16 @@
 #include"repch.h"
 #include "Application.h"
 #include "Real/Log.h"
-#include <glad/glad.h>
+#include "Real/Renderer/Renderer.h"
 #include"Input.h"
+
+#include <glfw/glfw3.h>
 namespace Real {
 	Application* Application::s_Instance = nullptr;
-	Application::Application() {
+
+	
+	Application::Application()
+	{
 		RE_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -14,18 +19,17 @@ namespace Real {
 			});
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
 	};
 	Application::~Application() {};
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
-		layer->OnAttach();
 	}
 	void Application::OnEvent(Event& e)
 	{
@@ -43,10 +47,12 @@ namespace Real {
 	void Application::Run() {
 		while(m_Running)
 		{
-			glClearColor(1, 1, 1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();

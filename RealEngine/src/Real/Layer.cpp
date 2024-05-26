@@ -8,9 +8,5 @@ namespace Real {
 	{
 	}
 
-	Layer::~Layer()
-	{
-
-	}
 
 }

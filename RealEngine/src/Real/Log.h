@@ -25,11 +25,11 @@ namespace Real {
 #define RE_CORE_INFO(...)	::Real::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define RE_CORE_WARN(...)	::Real::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define RE_CORE_ERROR(...)	::Real::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define RE_CORE_FATAL(...)	::Real::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+#define RE_CORE_FATAL(...)	::Real::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 //Client log ºê
 #define RE_TRACE(...)	::Real::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define RE_INFO(...)	::Real::Log::GetClientLogger()->info(__VA_ARGS__)
 #define RE_WARN(...)	::Real::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define RE_ERROR(...)	::Real::Log::GetClientLogger()->error(__VA_ARGS__)
-#define RE_FATAL(...)	::Real::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define RE_FATAL(...)	::Real::Log::GetClientLogger()->critical(__VA_ARGS__)
