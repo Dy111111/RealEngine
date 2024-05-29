@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #ifdef RE_PLATFORM_WINDOWS
 #if RE_DYNAMIC_LINK
 	#ifdef RE_BUILD_DLL
@@ -25,3 +26,12 @@
 #define RE_CORE_ASSERT(x, ...)
 #endif
 #define BIT(x) (1 << x)
+namespace Real {
+
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+}
