@@ -1,6 +1,6 @@
 #include "repch.h"
 #include "ImGuiLayer.h"
-
+#define IMGUI_IMPL_API
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -8,11 +8,10 @@
 
 #include "Real/Core/Application.h"
 #include "GLFW/glfw3.h"
-#include<glad/glad.h>
+#include "Real/Renderer/Renderer.h"
 namespace Real {
 
-	ImGuiLayer::ImGuiLayer()
-		: Layer("ImGuiLayer")
+	ImGuiLayer::ImGuiLayer(const std::string& name)
 	{
 	}
 
@@ -84,8 +83,7 @@ namespace Real {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		
 	}
 
 

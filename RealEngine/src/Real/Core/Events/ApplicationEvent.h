@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-
+#include <sstream>
 namespace Real {
 
 	class REAL_API WindowResizeEvent : public Event

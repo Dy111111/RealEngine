@@ -3,23 +3,44 @@
 
 namespace Real {
 
-	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
+	Renderer* Renderer::s_Instance = new Renderer();
+	RendererAPIType RendererAPI::s_CurrentRendererAPI = RendererAPIType::OpenGL;
 
-	void Renderer::BeginScene(OrthographicCamera& camera)
+	void Renderer::Init()
 	{
-		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		RE_RENDER({ RendererAPI::Init(); });
 	}
 
-	void Renderer::EndScene()
+	void Renderer::Clear()
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray)
+	void Renderer::Clear(float r, float g, float b, float a)
 	{
-		shader->Bind();
-		shader->UploadUniformMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
-
-		vertexArray->Bind();
-		RenderCommand::DrawIndexed(vertexArray);
+		RE_RENDER_4(r, g, b, a, {
+			RendererAPI::Clear(r, g, b, a);
+			});
 	}
+
+	void Renderer::ClearMagenta()
+	{
+		Clear(1, 0, 1);
+	}
+
+	void Renderer::SetClearColor(float r, float g, float b, float a)
+	{
+	}
+
+	void Renderer::DrawIndexed(unsigned int count, bool depthTest)
+	{
+		RE_RENDER_2(count, depthTest, {
+			RendererAPI::DrawIndexed(count, depthTest);
+			});
+	}
+
+	void Renderer::WaitAndRender()
+	{
+		s_Instance->m_CommandQueue.Execute();
+	}
+
 }

@@ -1,41 +1,68 @@
 #include"repch.h"
 #include "Application.h"
-#include "Real/Core/Log.h"
-#include "Real/Renderer/Renderer.h"
-#include"Input.h"
 
+#include "Real/Renderer/Renderer.h"
+#include "Real/Renderer/Framebuffer.h"
 #include <glfw/glfw3.h>
+#include <imgui/imgui.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32//?
+#include <GLFW/glfw3native.h>
+#include <Windows.h>
 namespace Real {
 	Application* Application::s_Instance = nullptr;
 
 	
 	Application::Application()
 	{
-		RE_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback([this](Event& event) {
 			this->OnEvent(event);
 			});
-		m_ImGuiLayer = new ImGuiLayer();
+		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
-
+		Renderer::Init();
 	};
 	Application::~Application() {};
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
+
+	void Application::RenderImGui()
+	{
+		m_ImGuiLayer->Begin();
+
+		ImGui::Begin("Renderer");
+		auto& caps = RendererAPI::GetCapabilities();
+		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
+		ImGui::Text("Renderer: %s", caps.Renderer.c_str());
+		ImGui::Text("Version: %s", caps.Version.c_str());
+		ImGui::End();
+
+		for (Layer* layer : m_LayerStack)
+			layer->OnImGuiRender();
+
+		m_ImGuiLayer->End();
+	}
+
+
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& event) {
 			return this->OnWindowClose(event);
+			});
+		dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
+			return this->OnWindowResize(event);
 			});
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
@@ -45,25 +72,58 @@ namespace Real {
 		}
 	}
 	void Application::Run() {
-		while(m_Running)
+		OnInit();
+		while (m_Running)
 		{
-			float time = (float)glfwGetTime();
-			Timestep timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate();
 
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate(timestep);
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+			// Render ImGui on render thread
+			Application* app = this;
+			RE_RENDER_1(app, { app->RenderImGui(); });
+
+			Renderer::Get().WaitAndRender();
 
 			m_Window->OnUpdate();
 		}
+		OnShutdown();
 	}
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
 		return true;
+	}
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		int width = e.GetWidth(), height = e.GetHeight();
+		RE_RENDER_2(width, height, { glViewport(0, 0, width, height); });
+		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
+		for (auto& fb : fbs)
+			fb->Resize(width, height);
+		return false;
+	}
+	std::string Application::OpenFile(const std::string& filter) const
+	{
+		OPENFILENAMEA ofn;       // common dialog box structure
+		CHAR szFile[260] = { 0 };       // if using TCHAR macros
+
+		// Initialize OPENFILENAME
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_Window->GetNativeWindow());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		ofn.lpstrFilter = "All\0*.*\0";
+		ofn.nFilterIndex = 1;
+		ofn.lpstrFileTitle = NULL;
+		ofn.nMaxFileTitle = 0;
+		ofn.lpstrInitialDir = NULL;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+		if (GetOpenFileNameA(&ofn) == TRUE)
+		{
+			return ofn.lpstrFile;
+		}
+		return std::string();
 	}
 }

@@ -1,16 +1,14 @@
 #pragma once
-
+#include"repch.h"
 #include "Real/Core/Layer.h"
-#include "Real/Core/Events/ApplicationEvent.h"
-#include "Real/Core/Events/KeyEvent.h"
-#include "Real/Core/Events/MouseEvent.h"
+
 
 namespace Real {
 
 	class REAL_API ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer(); 
+		ImGuiLayer(const std::string& name);
 		~ImGuiLayer();
 
 		virtual void OnAttach() override;

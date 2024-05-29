@@ -4,13 +4,11 @@
 extern Real::Application* Real::CreateApplication();
 int main(int argc,char** argv) {
 
-	Real::Log::Init();
-	RE_CORE_WARN("初始化日志Log!");
-	
-	int a = 5;
-	RE_INFO("Hello! Var={0}", a);
-	auto app = Real::CreateApplication();
+	Real::InitializeCore();
+	Real::Application* app = Real::CreateApplication();
+	RE_CORE_ASSERT(app, "Client Application is null!");
 	app->Run();
 	delete app;
+	Real::ShutdownCore();
 }
 #endif

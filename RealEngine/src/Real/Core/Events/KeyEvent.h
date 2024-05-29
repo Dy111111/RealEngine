@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Event.h"
+#include "Real/Core/KeyCodes.h"
 
-
+#include <sstream>
 
 namespace Real {
 

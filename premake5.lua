@@ -36,9 +36,9 @@ project "RealEngine"
 
 	files{
 		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.c",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/src/**.hpp",
 	}
 	defines
 	{
@@ -48,10 +48,13 @@ project "RealEngine"
 	includedirs{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{prj.name}/vendor/assimp/include",
+        "%{prj.name}/vendor/stb/include"
 	}
 	links{
 		"GLFW",
@@ -66,7 +69,6 @@ project "RealEngine"
 		{
 			"RE_PLATFORM_WINDOWS",
 			"RE_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
 		}
 
 
@@ -98,16 +100,20 @@ project "Sandbox"
 
 	files{
 		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.c",
+		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 	}
 	includedirs{
+		"%{prj.name}/src",
 		"RealEngine/vendor/spdlog/include",
 		"RealEngine/src",
 		"RealEngine/vendor",
 		"%{IncludeDir.glm}"
 	}
 	links{
-		"RealEngine"
+		"RealEngine",
+		"RealEngine/vendor/assimp/win64/assimp.lib"
 	}
 	filter "system:windows"
 		systemversion "latest"

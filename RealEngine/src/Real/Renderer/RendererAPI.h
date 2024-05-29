@@ -1,27 +1,48 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include "VertexArray.h"
-
 namespace Real {
+
+	using RendererID = uint32_t;
+
+	enum class RendererAPIType
+	{
+		None,
+		OpenGL
+	};
+
+	struct RenderAPICapabilities
+	{
+		std::string Vendor;
+		std::string Renderer;
+		std::string Version;
+
+		int MaxSamples;
+		float MaxAnisotropy;
+	};
 
 	class RendererAPI
 	{
-	public:
-		enum class API
-		{
-			None = 0, OpenGL = 1
-		};
-	public:
-		virtual void SetClearColor(const glm::vec4& color) = 0;
-		virtual void Clear() = 0;
-
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
-
-		inline static API GetAPI() { return s_API; }
 	private:
-		static API s_API;
+
+	public:
+		static void Init();
+		static void Shutdown();
+
+		static void Clear(float r, float g, float b, float a);
+		static void SetClearColor(float r, float g, float b, float a);
+
+		static void DrawIndexed(unsigned int count, bool depthTest = true);
+
+		static RenderAPICapabilities& GetCapabilities()
+		{
+			static RenderAPICapabilities capabilities;
+			return capabilities;
+		}
+
+		static RendererAPIType Current() { return s_CurrentRendererAPI; }
+	private:
+		static RendererAPIType s_CurrentRendererAPI;
 	};
+
 
 }

@@ -1,34 +1,28 @@
 #include "repch.h"
-#include "Buffer.h"
 
-#include "Renderer.h"
-
-#include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Real/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Real {
 
-	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size)
+	VertexBuffer* VertexBuffer::Create(unsigned int size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::Current())
 		{
-		case RendererAPI::API::None:    RE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPIType::None:    return nullptr;
+		case RendererAPIType::OpenGL:  return new OpenGLVertexBuffer(size);
 		}
-
-		RE_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
+
 	}
 
-	IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size)
+	IndexBuffer* IndexBuffer::Create(unsigned int size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::Current())
 		{
-		case RendererAPI::API::None:    RE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return new OpenGLIndexBuffer(indices, size);
+		case RendererAPIType::None:    return nullptr;
+		case RendererAPIType::OpenGL:  return new OpenGLIndexBuffer(size);
 		}
-
-		RE_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
-	}
 
+	}
 }

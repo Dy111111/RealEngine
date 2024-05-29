@@ -1,5 +1,7 @@
 #pragma once
-
+#ifdef RE_PLATFORM_WINDOWS
+#include<Windows.h>
+#endif
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -7,12 +9,14 @@
 #include <functional>
 
 #include <string>
+#include <array>
 #include <sstream>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-
+#include <functional>
+#include <algorithm>
+#include <fstream>
 #include "Real/Core/Log.h"
-#ifdef RE_PLATFORM_WINDOWS
-#include<Windows.h>
-#endif
+#include "Real/Core/Core.h"
+#include "Real/Core/Events/Event.h"

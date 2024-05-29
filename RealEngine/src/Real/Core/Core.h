@@ -1,4 +1,12 @@
 #pragma once
+#include <memory>
+
+namespace Real {
+
+	void InitializeCore();
+	void ShutdownCore();
+
+}
 #ifdef RE_PLATFORM_WINDOWS
 #if RE_DYNAMIC_LINK
 	#ifdef RE_BUILD_DLL
