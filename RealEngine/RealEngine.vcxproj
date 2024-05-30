@@ -80,7 +80,9 @@
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -105,6 +107,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -130,6 +133,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -167,6 +171,7 @@
     <ClInclude Include="src\Real\LayerStack.h" />
     <ClInclude Include="src\Real\Log.h" />
     <ClInclude Include="src\Real\MouseButtonCodes.h" />
+    <ClInclude Include="src\Real\OrthographicCameraController.h" />
     <ClInclude Include="src\Real\Renderer\Buffer.h" />
     <ClInclude Include="src\Real\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Real\Renderer\OrthographicCamera.h" />
@@ -611,6 +616,7 @@
     <ClCompile Include="src\Real\Layer.cpp" />
     <ClCompile Include="src\Real\LayerStack.cpp" />
     <ClCompile Include="src\Real\Log.cpp" />
+    <ClCompile Include="src\Real\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Real\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Real\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Real\Renderer\RenderCommand.cpp" />

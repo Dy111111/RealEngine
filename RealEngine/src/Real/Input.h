@@ -4,7 +4,11 @@ namespace Real {
 
 	class REAL_API Input
 	{
+	protected:
+		Input() = default;//确保单例
 	public:
+		Input(const Input&) = delete;//删除了类的拷贝构造函数，不能通过拷贝对象来创建
+		Input& operator=(const Input&) = delete;//删除了拷贝赋值运算符。禁止了使用拷贝赋值运算符来赋值 Input 类的实例。
 		inline static bool IsKeyPressed(int keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
 
 		inline static bool IsMouseButtonPressed(int button) { return s_Instance->IsMouseButtonPressedImpl(button); }

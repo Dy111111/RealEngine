@@ -9,7 +9,7 @@ class ExampleLayer : public Real::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
+		: Layer("Example"), m_CameraController(1280.0f / 720.0f)
 	{
 		m_VertexArray.reset(Real::VertexArray::Create());
 
@@ -85,7 +85,7 @@ public:
 			}
 		)";
 
-		m_Shader.reset(Real::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Real::Shader::Create("VertexPosColor", vertexSrc, fragmentSrc);
 
 		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
@@ -113,71 +113,26 @@ public:
 			}
 		)";
 
-		m_FlatColorShader.reset(Real::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
-	
-		std::string textureShaderVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-			out vec2 v_TexCoord;
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-			}
-		)";
-
-		std::string textureShaderFragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-			in vec2 v_TexCoord;
-			
-			uniform sampler2D u_Texture;
-			void main()
-			{
-				color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-
-		m_TextureShader.reset(Real::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+		m_FlatColorShader = Real::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
 		m_Texture = Real::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_ChernoLogoTexture = Real::Texture2D::Create("assets/textures/ChernoLogo.png");
 
-		std::dynamic_pointer_cast<Real::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Real::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Real::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Real::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 
 
 }
 
 	void OnUpdate(Real::Timestep ts) override
 	{
-		if (Real::Input::IsKeyPressed(RE_KEY_LEFT))
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-		else if (Real::Input::IsKeyPressed(RE_KEY_RIGHT))
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-
-		if (Real::Input::IsKeyPressed(RE_KEY_UP))
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-		else if (Real::Input::IsKeyPressed(RE_KEY_DOWN))
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-
-		if (Real::Input::IsKeyPressed(RE_KEY_A))
-			m_CameraRotation += m_CameraRotationSpeed * ts;
-		if (Real::Input::IsKeyPressed(RE_KEY_D))
-			m_CameraRotation -= m_CameraRotationSpeed * ts;
+		m_CameraController.OnUpdate(ts);
 
 		Real::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Real::RenderCommand::Clear();
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-
-		Real::Renderer::BeginScene(m_Camera);
+		Real::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 		std::dynamic_pointer_cast<Real::OpenGLShader>(m_FlatColorShader)->Bind();
@@ -193,10 +148,11 @@ public:
 				Real::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 			}
 		}
+		auto textureShader = m_ShaderLibrary.Get("Texture");
 		m_Texture->Bind();
-		Real::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Real::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		m_ChernoLogoTexture->Bind();
-		Real::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Real::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		Real::Renderer::EndScene();
 	}
 
@@ -207,25 +163,21 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Real::Event& event) override
+	void OnEvent(Real::Event& e) override
 	{
-		
+		m_CameraController.OnEvent(e);
 	}
 	private:
+		Real::ShaderLibrary m_ShaderLibrary;
 		Real::Ref<Real::Shader> m_Shader;
 		Real::Ref<Real::VertexArray> m_VertexArray;
 		
-		Real::Ref<Real::Shader> m_FlatColorShader, m_TextureShader;
+		Real::Ref<Real::Shader> m_FlatColorShader;
 		Real::Ref<Real::VertexArray> m_SquareVA;
 		
 		Real::Ref<Real::Texture2D> m_Texture, m_ChernoLogoTexture;
 
-		Real::OrthographicCamera m_Camera;
-		glm::vec3 m_CameraPosition;
-		float m_CameraMoveSpeed = 5.0f;
-
-		float m_CameraRotation = 0.0f;
-		float m_CameraRotationSpeed = 180.0f;
+		Real::OrthographicCameraController m_CameraController;
 		glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
 class Sandbox :public Real::Application {
