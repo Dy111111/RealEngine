@@ -1,24 +1,25 @@
 #pragma once
 
 #include "Real/Core/Core.h"
+#include "Real/Core/Buffer.h"
 #include "Real/Renderer/Renderer.h"
-
+#include "Real/Renderer/ShaderUniform.h"
 #include <string>
 #include <glm/glm.hpp>
 
 namespace Real
 {
-	struct REAL_API ShaderUniform
+	struct ShaderUniform
 	{
 
 	};
 
-	struct REAL_API ShaderUniformCollection
+	struct ShaderUniformCollection
 	{
 
 	};
 
-	enum class REAL_API UniformType
+	enum class UniformType
 	{
 		None = 0,
 		Float, Float2, Float3, Float4,
@@ -26,14 +27,14 @@ namespace Real
 		Int32, Uint32
 	};
 
-	struct REAL_API UniformDecl
+	struct UniformDecl
 	{
 		UniformType Type;
 		std::ptrdiff_t Offset;
 		std::string Name;
 	};
 
-	struct REAL_API UniformBuffer
+	struct UniformBuffer
 	{
 		// TODO: This currently represents a byte buffer that has been
 		// packed with uniforms. This was primarily created for OpenGL,
@@ -102,9 +103,10 @@ namespace Real
 	};
 
 
-	class REAL_API Shader
+	class Shader
 	{
 	public:
+		using ShaderReloadedCallback = std::function<void()>;
 		virtual void Reload() = 0;
 
 		virtual void Bind() = 0;
@@ -113,6 +115,7 @@ namespace Real
 		// Temporary while we don't have materials
 		virtual void SetFloat(const std::string& name, float value) = 0;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
+		virtual void SetMat4FromRenderThread(const std::string& name, const glm::mat4& value) = 0;
 
 		virtual const std::string& GetName() const = 0;
 
@@ -121,6 +124,17 @@ namespace Real
 		//       in the future this will be an asset object + metadata
 		static Shader* Create(const std::string& filepath);
 
+		virtual void SetVSMaterialUniformBuffer(Buffer buffer) = 0;
+		virtual void SetPSMaterialUniformBuffer(Buffer buffer) = 0;
+
+		virtual const ShaderUniformBufferList& GetVSRendererUniforms() const = 0;
+		virtual const ShaderUniformBufferList& GetPSRendererUniforms() const = 0;
+		virtual const ShaderUniformBufferDeclaration& GetVSMaterialUniformBuffer() const = 0;
+		virtual const ShaderUniformBufferDeclaration& GetPSMaterialUniformBuffer() const = 0;
+
+		virtual const ShaderResourceList& GetResources() const = 0;
+
+		virtual void AddShaderReloadedCallback(const ShaderReloadedCallback& callback) = 0;
 		// Temporary, before we have an asset manager
 		static std::vector<Shader*> s_AllShaders;
 	};

@@ -5,7 +5,7 @@
 #include"Real/Core/Events/Event.h"
 #include"Real/Core/Events/ApplicationEvent.h"
 #include"Real/ImGui/ImGuiLayer.h"
-//#include "Real/Core/Timestep.h"
+#include "Real/Core/Timestep.h"
 
 namespace Real {
 	class Application
@@ -17,7 +17,7 @@ namespace Real {
 
 		virtual void OnInit() {}
 		virtual void OnShutdown() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(TimeStep ts) {}
 
 		void OnEvent(Event& e);
 		void PushLayer(Layer* layer);
@@ -29,14 +29,17 @@ namespace Real {
 		inline Window& GetWindow() { return *m_Window; }
 
 		inline static Application& Get() { return *s_Instance; }
+		float GetTime() const; // TODO: This should be in "Platform"
 	private:
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
-		bool m_Running = true;
+		bool m_Running = true, m_Minimized = false;
 		LayerStack m_LayerStack;
+		TimeStep m_TimeStep;
+		float m_LastFrameTime = 0.0f;
 	private:
 		static Application* s_Instance;
 	};

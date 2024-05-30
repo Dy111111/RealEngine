@@ -17,6 +17,6 @@
 #include <functional>
 #include <algorithm>
 #include <fstream>
-#include "Real/Core/Log.h"
 #include "Real/Core/Core.h"
+#include "Real/Core/Log.h"
 #include "Real/Core/Events/Event.h"

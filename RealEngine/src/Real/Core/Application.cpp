@@ -20,6 +20,7 @@ namespace Real {
 		m_Window->SetEventCallback([this](Event& event) {
 			this->OnEvent(event);
 			});
+		m_Window->SetVSync(false);
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
 		Renderer::Init();
@@ -46,6 +47,7 @@ namespace Real {
 		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
 		ImGui::Text("Renderer: %s", caps.Renderer.c_str());
 		ImGui::Text("Version: %s", caps.Version.c_str());
+		ImGui::Text("Frame Time: %.2fms\n", m_TimeStep.GetMilliseconds());
 		ImGui::End();
 
 		for (Layer* layer : m_LayerStack)
@@ -75,16 +77,22 @@ namespace Real {
 		OnInit();
 		while (m_Running)
 		{
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate(m_TimeStep);
 
-			// Render ImGui on render thread
-			Application* app = this;
-			RE_RENDER_1(app, { app->RenderImGui(); });
+				// Render ImGui on render thread
+				Application* app = this;
+				RE_RENDER_1(app, { app->RenderImGui(); });
 
-			Renderer::Get().WaitAndRender();
+				Renderer::Get().WaitAndRender();
+			}
 
 			m_Window->OnUpdate();
+			float time = GetTime();
+			m_TimeStep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 		}
 		OnShutdown();
 	}
@@ -96,6 +104,12 @@ namespace Real {
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
 		int width = e.GetWidth(), height = e.GetHeight();
+		if(width == 0 || height == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+		m_Minimized = false;
 		RE_RENDER_2(width, height, { glViewport(0, 0, width, height); });
 		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
 		for (auto& fb : fbs)
@@ -125,5 +139,10 @@ namespace Real {
 			return ofn.lpstrFile;
 		}
 		return std::string();
+	}
+
+	float Application::GetTime() const
+	{
+		return (float)glfwGetTime();
 	}
 }

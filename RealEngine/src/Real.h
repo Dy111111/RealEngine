@@ -7,6 +7,7 @@
 #include "Real/Core/Events/ApplicationEvent.h"
 #include "Real/Core/Events/KeyEvent.h"
 #include "Real/Core/Events/MouseEvent.h"
+#include"Real/Core/Timestep.h"
 
 #include "imgui/imgui.h"
 
@@ -19,6 +20,7 @@
 #include "Real/Renderer/Shader.h"
 #include "Real/Renderer/Mesh.h"
 #include "Real/Renderer/Camera.h"
+#include"Real/Renderer/Material.h"
 // -----------------------------------
 //-----Entry Point------
 #include"Real/EntryPoint.h"

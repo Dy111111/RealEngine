@@ -5,7 +5,7 @@
 
 namespace Real {
 
-	class REAL_API Renderer
+	class Renderer
 	{
 	public:
 		typedef void(*RenderCommandFn)(void*);

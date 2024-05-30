@@ -112,8 +112,7 @@ project "Sandbox"
 		"%{IncludeDir.glm}"
 	}
 	links{
-		"RealEngine",
-		"RealEngine/vendor/assimp/win64/assimp.lib"
+		"RealEngine"
 	}
 	filter "system:windows"
 		systemversion "latest"
@@ -130,15 +129,27 @@ project "Sandbox"
 		defines "RE_DEBUG"
 		runtime "Debug"
 		symbols "on"
+		links
+		{
+			"RealEngine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+		}
 
 	filter "configurations:Release"
 		defines "RE_RELEASE"
 		runtime "Release"
 		optimize "on"
+		links
+		{
+			"RealEngine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
 
 	filter "configurations:Dist"
 		defines "RE_DIST"
 		runtime "Release"
 		optimize "on"
+		links
+		{
+			"RealEngine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
 
 	

@@ -2,7 +2,7 @@
 
 #include "Real/Core/Core.h"
 #include "Real/Core/Events/Event.h"
-//#include "Real/Core/Timestep.h"
+#include "Real/Core/Timestep.h"
 namespace Real {
 
 	class REAL_API Layer
@@ -13,7 +13,7 @@ namespace Real {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(TimeStep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
