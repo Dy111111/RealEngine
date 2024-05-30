@@ -1,7 +1,11 @@
-#目录
-RealEngine/.vs/
-RealEngine/bin/
-RealEngine/bin-int/
+# Binaries
+**/bin/
+!vendor/bin/premake/
+bin-int/
 
-#文件
-*.user
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
