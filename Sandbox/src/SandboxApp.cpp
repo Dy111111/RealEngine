@@ -146,6 +146,7 @@ public:
 		m_TextureShader.reset(Real::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
 
 		m_Texture = Real::Texture2D::Create("assets/textures/Checkerboard.png");
+		m_ChernoLogoTexture = Real::Texture2D::Create("assets/textures/ChernoLogo.png");
 
 		std::dynamic_pointer_cast<Real::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Real::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -194,7 +195,8 @@ public:
 		}
 		m_Texture->Bind();
 		Real::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
+		m_ChernoLogoTexture->Bind();
+		Real::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		Real::Renderer::EndScene();
 	}
 
@@ -216,7 +218,7 @@ public:
 		Real::Ref<Real::Shader> m_FlatColorShader, m_TextureShader;
 		Real::Ref<Real::VertexArray> m_SquareVA;
 		
-		Real::Ref<Real::Texture2D> m_Texture;
+		Real::Ref<Real::Texture2D> m_Texture, m_ChernoLogoTexture;
 
 		Real::OrthographicCamera m_Camera;
 		glm::vec3 m_CameraPosition;

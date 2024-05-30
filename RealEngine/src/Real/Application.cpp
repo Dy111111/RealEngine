@@ -17,6 +17,7 @@ namespace Real {
 		m_Window->SetEventCallback([this](Event& event) {
 			this->OnEvent(event);
 			});
+		Renderer::Init();
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
