@@ -13,6 +13,7 @@
 
 // ---Renderer------------------------
 #include"Real/Renderer/Renderer.h"
+#include"Real/Renderer/Renderer2D.h"
 #include"Real/Renderer/RenderCommand.h"
 		  
 #include"Real/Renderer/Buffer.h"
@@ -21,6 +22,3 @@
 #include"Real/Renderer/VertexArray.h"
 		  
 #include "Real/Renderer/OrthographicCamera.h"
-// -----------------------------------
-//-----Entry Point------
-#include"Real/Core/EntryPoint.h"

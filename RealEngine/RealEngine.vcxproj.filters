@@ -81,17 +81,38 @@
     <ClInclude Include="src\Real.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Application.h">
-      <Filter>src\Real</Filter>
+    <ClInclude Include="src\Real\Core\Application.h">
+      <Filter>src\Real\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Core.h">
-      <Filter>src\Real</Filter>
+    <ClInclude Include="src\Real\Core\Core.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\EntryPoint.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Input.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\KeyCodes.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Layer.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\LayerStack.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Log.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\MouseButtonCodes.h">
+      <Filter>src\Real\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Core\Timestep.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\EntryPoint.h">
-      <Filter>src\Real</Filter>
+    <ClInclude Include="src\Real\Core\Window.h">
+      <Filter>src\Real\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Events\ApplicationEvent.h">
       <Filter>src\Real\Events</Filter>
@@ -108,24 +129,6 @@
     <ClInclude Include="src\Real\ImGui\ImGuiLayer.h">
       <Filter>src\Real\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Input.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\KeyCodes.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\Layer.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\LayerStack.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\Log.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\MouseButtonCodes.h">
-      <Filter>src\Real</Filter>
-    </ClInclude>
     <ClInclude Include="src\Real\Renderer\Buffer.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
@@ -133,6 +136,9 @@
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Renderer\OrthographicCamera.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Renderer\OrthographicCameraController.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Renderer\RenderCommand.h">
@@ -152,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="src\Real\Renderer\VertexArray.h">
       <Filter>src\Real\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Real\Window.h">
-      <Filter>src\Real</Filter>
     </ClInclude>
     <ClInclude Include="src\repch.h">
       <Filter>src</Filter>
@@ -1410,7 +1413,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\OrthographicCameraController.h" />
+    <ClInclude Include="src\Real\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1437,8 +1440,17 @@
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Application.cpp">
-      <Filter>src\Real</Filter>
+    <ClCompile Include="src\Real\Core\Application.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Core\Layer.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Core\LayerStack.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Core\Log.cpp">
+      <Filter>src\Real\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\ImGui\ImGuiBuild.cpp">
       <Filter>src\Real\ImGui</Filter>
@@ -1446,19 +1458,13 @@
     <ClCompile Include="src\Real\ImGui\ImGuiLayer.cpp">
       <Filter>src\Real\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Layer.cpp">
-      <Filter>src\Real</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Real\LayerStack.cpp">
-      <Filter>src\Real</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Real\Log.cpp">
-      <Filter>src\Real</Filter>
-    </ClCompile>
     <ClCompile Include="src\Real\Renderer\Buffer.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Renderer\OrthographicCamera.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Renderer\OrthographicCameraController.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Renderer\RenderCommand.cpp">
@@ -1485,6 +1491,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Real\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

@@ -71,7 +71,6 @@ project "RealEngine"
 
 		defines
 		{
-			"RE_PLATFORM_WINDOWS",
 			"RE_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
@@ -121,7 +120,6 @@ project "Sandbox"
 
 		defines
 		{
-			"RE_PLATFORM_WINDOWS",
 			"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
 		}
 
