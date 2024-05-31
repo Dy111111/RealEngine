@@ -1,12 +1,11 @@
 #pragma once
-#include"Core.h"
+#include"Real/Core/Core.h"
 #include"Real/Core/LayerStack.h"
 #include"Real/Events/Event.h"
 #include"Real/Events/ApplicationEvent.h"
 #include"Real/ImGui/ImGuiLayer.h"
-#include "Real/Core/Timestep.h"
-
-#include"Window.h"
+#include"Real/Core/Timestep.h"
+#include"Real/Core/Window.h"
 namespace Real {
 	class Application
 	{

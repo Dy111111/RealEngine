@@ -1,5 +1,6 @@
 #pragma once
 //为应用该引擎的程序准备的
+#include"Real/Core/Core.h"
 #include"Real/Core/Application.h"
 #include"Real/Core/Layer.h"
 #include"Real/Core/Log.h"

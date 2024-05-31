@@ -1,8 +1,8 @@
 #include"repch.h"
-#include "Application.h"
+#include "Real/Core/Application.h"
 #include "Real/Core/Log.h"
 #include "Real/Renderer/Renderer.h"
-#include"Input.h"
+#include"Real/Core/Input.h"
 
 #include <glfw/glfw3.h>
 namespace Real {
@@ -13,7 +13,7 @@ namespace Real {
 	{
 		RE_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Window::Create();
 		m_Window->SetEventCallback([this](Event& event) {
 			this->OnEvent(event);
 			});
@@ -22,7 +22,11 @@ namespace Real {
 		PushOverlay(m_ImGuiLayer);
 
 	};
-	Application::~Application() {};
+	Application::~Application()
+	{
+		Renderer::Shutdown();
+	}
+
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);

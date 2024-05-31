@@ -1,7 +1,7 @@
 #pragma once
 
-#include "OrthographicCamera.h"
-#include"Texture.h"
+#include"Real/Renderer/OrthographicCamera.h"
+#include"Real/Renderer/Texture.h"
 
 namespace Real {
 

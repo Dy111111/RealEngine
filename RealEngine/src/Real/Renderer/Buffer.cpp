@@ -1,7 +1,7 @@
 #include "repch.h"
-#include "Buffer.h"
+#include "Real/Renderer/Buffer.h"
 
-#include "Renderer.h"
+#include "Real/Renderer/Renderer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
 

@@ -618,6 +618,7 @@
     <ClCompile Include="src\Real\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Real\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Real\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Real\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Real\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Real\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Real\Renderer\Renderer2D.cpp" />

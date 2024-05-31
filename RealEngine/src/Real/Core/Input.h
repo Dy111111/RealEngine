@@ -2,7 +2,7 @@
 #include"Real/Core/Core.h"
 namespace Real {
 
-	class REAL_API Input
+	class Input
 	{
 	protected:
 		Input() = default;//È·±£µ¥Àý

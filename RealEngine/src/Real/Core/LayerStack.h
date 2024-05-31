@@ -1,16 +1,16 @@
 #pragma once
 
 #include "Real/Core/Core.h"
-#include "Layer.h"
+#include "Real/Core/Layer.h"
 
 #include <vector>
 
 namespace Real {
 
-	class REAL_API LayerStack
+	class  LayerStack
 	{
 	public:
-		LayerStack();
+		LayerStack()=default;
 		~LayerStack();
 
 		void PushLayer(Layer* layer);

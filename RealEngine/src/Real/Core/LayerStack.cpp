@@ -1,12 +1,7 @@
 #include "repch.h"
-#include "LayerStack.h"
+#include "Real/Core/LayerStack.h"
 
 namespace Real {
-
-	LayerStack::LayerStack()
-	{
-		
-	}
 
 	LayerStack::~LayerStack()
 	{

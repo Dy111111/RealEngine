@@ -1,4 +1,5 @@
 #pragma once
+#include"Real/Core/Core.h"
 #ifdef RE_PLATFORM_WINDOWS
 
 extern Real::Application* Real::CreateApplication();

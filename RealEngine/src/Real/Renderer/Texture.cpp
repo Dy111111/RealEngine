@@ -1,7 +1,7 @@
 #include "repch.h"
-#include "Texture.h"
+#include "Real/Renderer/Texture.h"
 
-#include "Renderer.h"
+#include "Real/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 namespace Real {

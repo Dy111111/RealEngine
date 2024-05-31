@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Event.h"
+#include "Real/Events/Event.h"
 
 
 
 namespace Real {
 
-	class REAL_API KeyEvent : public Event
+	class  KeyEvent : public Event
 	{
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
@@ -19,7 +19,7 @@ namespace Real {
 		int m_KeyCode;
 	};
 
-	class REAL_API KeyPressedEvent : public KeyEvent
+	class  KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keycode, int repeatCount)
@@ -39,7 +39,7 @@ namespace Real {
 		int m_RepeatCount;
 	};
 
-	class REAL_API KeyReleasedEvent : public KeyEvent
+	class  KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode)
@@ -55,7 +55,7 @@ namespace Real {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class REAL_API KeyTypedEvent : public KeyEvent
+	class  KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(int keycode)
