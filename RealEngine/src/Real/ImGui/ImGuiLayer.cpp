@@ -82,11 +82,6 @@ namespace Real {
 		}
 	}
 
-	void ImGuiLayer::OnImGuiRender()
-	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-	}
 
 
 	
