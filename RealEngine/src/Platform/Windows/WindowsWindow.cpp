@@ -1,10 +1,10 @@
 #include "repch.h"
 #include "Platform/Windows/WindowsWindow.h"
-
+#include "Real/Core/Input.h"
 #include"Real/Events/ApplicationEvent.h"
 #include"Real/Events/MouseEvent.h"
 #include"Real/Events/KeyEvent.h"
-
+#include "Real/Renderer/Renderer.h"
 #include"Platform/OpenGL/OpenGLContext.h"
 
 namespace Real {
@@ -15,23 +15,23 @@ namespace Real {
 		RE_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Scope<Window> Window::Create(const WindowProps& props)
-	{
-		return CreateScope<WindowsWindow>(props);
-	}
+	
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		RE_PROFILE_FUNCTION();
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		RE_PROFILE_FUNCTION();
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		RE_PROFILE_FUNCTION();
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -40,13 +40,21 @@ namespace Real {
 
 		if (s_GLFWWindowCount == 0)
 		{
+			RE_PROFILE_SCOPE("glfwInit");
 			// TODO: glfwTerminate on system shutdown
 			int success = glfwInit();
-			RE_CORE_ASSERT(success, "Could not intialize GLFW!");
+			RE_CORE_ASSERT(success, "Could not initialize GLFW!");
 
 		}
-		++s_GLFWWindowCount;
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		{
+			RE_PROFILE_SCOPE("glfwCreateWindow");
+			#if defined(RE_DEBUG)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+			#endif
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
 		m_Context = GraphicsContext::Create(m_Window);
 		m_Context->Init();
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -78,19 +86,19 @@ namespace Real {
 				{
 				case GLFW_PRESS:
 				{
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event(static_cast<KeyCode>(key), 0);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleasedEvent event(key);
+					KeyReleasedEvent event(static_cast<KeyCode>(key));
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent event(key, 1);
+					KeyPressedEvent event(static_cast<KeyCode>(key), 1);
 					data.EventCallback(event);
 					break;
 				}
@@ -101,7 +109,7 @@ namespace Real {
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-				KeyTypedEvent event(keycode);
+				KeyTypedEvent event(static_cast<KeyCode>(keycode));
 				data.EventCallback(event);
 			});
 
@@ -113,13 +121,13 @@ namespace Real {
 				{
 				case GLFW_PRESS:
 				{
-					MouseButtonPressedEvent event(button);
+					MouseButtonPressedEvent event(static_cast<MouseCode>(button));
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					MouseButtonReleasedEvent event(button);
+					MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
 					data.EventCallback(event);
 					break;
 				}
@@ -145,6 +153,7 @@ namespace Real {
 
 	void WindowsWindow::Shutdown()
 	{
+		RE_PROFILE_FUNCTION();
 		glfwDestroyWindow(m_Window);
 		--s_GLFWWindowCount;
 		if (s_GLFWWindowCount == 0)
@@ -155,12 +164,14 @@ namespace Real {
 
 	void WindowsWindow::OnUpdate()
 	{
+		RE_PROFILE_FUNCTION();
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		RE_PROFILE_FUNCTION();
 		if (enabled)
 			glfwSwapInterval(1);
 		else

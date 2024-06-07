@@ -13,6 +13,7 @@ namespace Real {
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
+		RE_PROFILE_FUNCTION();
 		if (Input::IsKeyPressed(RE_KEY_A))
 		{
 			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
@@ -55,6 +56,7 @@ namespace Real {
 
 	void OrthographicCameraController::OnEvent(Event& e)
 	{
+		RE_PROFILE_FUNCTION();
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& event) {
 			return this->OnMouseScrolled(event);
@@ -64,8 +66,15 @@ namespace Real {
 			});
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		m_AspectRatio = width / height;
+		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
+		RE_PROFILE_FUNCTION();
 		m_ZoomLevel -= e.GetYOffset() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
@@ -74,8 +83,8 @@ namespace Real {
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		RE_PROFILE_FUNCTION();
+		OnResize((float)e.GetWidth(), (float)e.GetHeight());
 		return false;
 	}
 

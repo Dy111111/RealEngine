@@ -3,13 +3,13 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
-#include <GL/GL.h>
 
 namespace Real {
 
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 		: m_WindowHandle(windowHandle)
 	{
+		RE_PROFILE_FUNCTION();
 		RE_CORE_ASSERT(windowHandle, "Window handle is null!")
 	}
 
@@ -35,6 +35,7 @@ namespace Real {
 
 	void OpenGLContext::SwapBuffers()
 	{
+		RE_PROFILE_FUNCTION();
 		glfwSwapBuffers(m_WindowHandle);
 	}
 

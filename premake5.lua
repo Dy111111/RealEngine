@@ -1,6 +1,6 @@
 workspace "RealEngine"
-	architecture "x64"
-	startproject "Sandbox"
+	architecture "x86_64"
+	startproject "Realnut"
 	configurations{
 		"Debug",
 		"Release",
@@ -19,6 +19,7 @@ IncludeDir["Glad"] = "RealEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "RealEngine/vendor/imgui"
 IncludeDir["glm"] = "RealEngine/vendor/glm"
 IncludeDir["stb_image"] = "RealEngine/vendor/stb_image"
+IncludeDir["entt"] = "RealEngine/vendor/entt/include"
 
 include "RealEngine/vendor/GLFW"
 include "RealEngine/vendor/Glad"
@@ -49,6 +50,7 @@ project "RealEngine"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE",
 		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
 	}
 	includedirs{
@@ -58,7 +60,8 @@ project "RealEngine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 	links{
 		"GLFW",
@@ -71,8 +74,7 @@ project "RealEngine"
 
 		defines
 		{
-			"RE_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			
 		}
 
 
@@ -140,4 +142,51 @@ project "Sandbox"
 		runtime "Release"
 		optimize "on"
 
+project "Realnut"
+	location "Realnut"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"RealEngine/vendor/spdlog/include",
+		"RealEngine/src",
+		"RealEngine/vendor",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
+	}
+
+	links
+	{
+		"RealEngine"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+	filter "configurations:Debug"
+		defines "RE_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "RE_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "RE_DIST"
+		runtime "Release"
+		optimize "on"
 	

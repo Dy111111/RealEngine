@@ -14,6 +14,7 @@
 #include <unordered_set>
 
 #include "Real/Core/Log.h"
+#include "Real/Debug/Instrumentor.h"
 #ifdef RE_PLATFORM_WINDOWS
 #include<Windows.h>
 #endif
