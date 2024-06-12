@@ -8,8 +8,8 @@ namespace Real {
 	class Realnut : public Application
 	{
 	public:
-		Realnut()
-			: Application("Realnut")
+		Realnut(ApplicationCommandLineArgs args)
+			: Application("Real", args)
 		{
 			PushLayer(new EditorLayer());
 		}
@@ -19,9 +19,9 @@ namespace Real {
 		}
 	};
 
-	Application* CreateApplication()
+	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new Realnut();
+		return new Realnut(args);
 	}
 
 }

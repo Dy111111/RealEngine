@@ -1,5 +1,6 @@
 #pragma once
-#include "repch.h"
+#include <functional>
+#include "Real/Debug/Instrumentor.h"
 #include "Real/Core/Base.h"
 
 namespace Real {
@@ -23,6 +24,9 @@ namespace Real {
 		EventCategoryMouseButton = BIT(4)
 	};
 
+
+//#表示转为字符串
+//##表示单纯的替换 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
 								virtual EventType GetEventType() const override { return GetStaticType(); }\
 								virtual const char* GetName() const override { return #type; }
@@ -62,7 +66,7 @@ namespace Real {
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.Handled = func(static_cast<T&>(m_Event));
+				m_Event.Handled |= func(static_cast<T&>(m_Event));
 				return true;
 			}
 			return false;

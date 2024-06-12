@@ -1,3 +1,5 @@
+include "./vendor/premake/premake_customization/solution_items.lua"
+include "Dependencies.lua"
 workspace "RealEngine"
 	architecture "x86_64"
 	startproject "Realnut"
@@ -6,187 +8,26 @@ workspace "RealEngine"
 		"Release",
 		"Dist"
 	}
+	solution_items
+	{
+		".editorconfig"
+	}
+
 	flags
 	{
 		"MultiProcessorCompile"
 	}
 outputdir="%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories relative to root folder (solution directory)
-IncludeDir = {}
-IncludeDir["GLFW"] = "RealEngine/vendor/GLFW/include"
-IncludeDir["Glad"] = "RealEngine/vendor/Glad/include"
-IncludeDir["ImGui"] = "RealEngine/vendor/imgui"
-IncludeDir["glm"] = "RealEngine/vendor/glm"
-IncludeDir["stb_image"] = "RealEngine/vendor/stb_image"
-IncludeDir["entt"] = "RealEngine/vendor/entt/include"
 
-include "RealEngine/vendor/GLFW"
-include "RealEngine/vendor/Glad"
-include "RealEngine/vendor/imgui"
+group "Dependencies"
+	include "vendor/premake"
+	include "RealEngine/vendor/GLFW"
+	include "RealEngine/vendor/Glad"
+	include "RealEngine/vendor/imgui"
+	include "RealEngine/vendor/yaml-cpp"
+group ""
 
-
-project "RealEngine"
-	location "RealEngine"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir("bin/" ..outputdir.."/%{prj.name}")
-	objdir("bin-int/" ..outputdir.."/%{prj.name}")
-
-	pchheader "repch.h"
-	pchsource "RealEngine/src/repch.cpp"
-
-	files{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
-	}
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE",
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
-	}
-	includedirs{
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
-	}
-	links{
-		"GLFW",
-		"Glad",
-		"ImGui",
-		"opengl32.lib"
-	}
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			
-		}
-
-
-	filter "configurations:Debug"
-		defines "RE_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "RE_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "RE_DIST"
-		runtime "Release"
-		optimize "on"
-
-
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir("bin/" ..outputdir.."/%{prj.name}")
-	objdir("bin-int/" ..outputdir.."/%{prj.name}")
-
-	files{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-	}
-	includedirs{
-		"RealEngine/vendor/spdlog/include",
-		"RealEngine/src",
-		"RealEngine/vendor",
-		"%{IncludeDir.glm}"
-	}
-	links{
-		"RealEngine"
-	}
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
-		}
-
-		 
-
-	filter "configurations:Debug"
-		defines "RE_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "RE_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "RE_DIST"
-		runtime "Release"
-		optimize "on"
-
-project "Realnut"
-	location "Realnut"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs
-	{
-		"RealEngine/vendor/spdlog/include",
-		"RealEngine/src",
-		"RealEngine/vendor",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
-	}
-
-	links
-	{
-		"RealEngine"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-	filter "configurations:Debug"
-		defines "RE_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "RE_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "RE_DIST"
-		runtime "Release"
-		optimize "on"
-	
+include "RealEngine"
+include "Sandbox"
+include "Realnut"

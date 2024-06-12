@@ -9,10 +9,21 @@
 
 int main(int argc, char** argv);
 namespace Real {
+	struct ApplicationCommandLineArgs
+	{
+		int Count = 0;
+		char** Args = nullptr;
+
+		const char* operator[](int index) const
+		{
+			RE_CORE_ASSERT(index < Count);
+			return Args[index];
+		}
+	};
 	class Application
 	{
 	public:
-		Application(const std::string& name = "Real App");
+		Application(const std::string& name = "Real App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
 		virtual ~Application();
 		
 		void OnEvent(Event& e);
@@ -23,6 +34,7 @@ namespace Real {
 
 		static Application& Get() { return *s_Instance; }
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_CommandLineArgs; }
 
 		void Close();
 	private:
@@ -30,7 +42,8 @@ namespace Real {
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		void Run();
-		std::unique_ptr<Window> m_Window;
+		ApplicationCommandLineArgs m_CommandLineArgs;
+		Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		bool m_Minimized = false;
@@ -42,7 +55,7 @@ namespace Real {
 	};
 
 	//To be defined in client
-	Application* CreateApplication();
+	Application* CreateApplication(ApplicationCommandLineArgs args);
 
 
 }

@@ -1,17 +1,24 @@
 #pragma once
 
-#include <string>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
 #include <fstream>
 #include <iomanip>
+#include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
+
+#include "Real/Core/Log.h"
 
 namespace Real {
+
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
+
 	struct ProfileResult
 	{
 		std::string Name;
+
 		FloatingPointMicroseconds Start;
 		std::chrono::microseconds ElapsedTime;
 		std::thread::id ThreadID;
@@ -24,15 +31,9 @@ namespace Real {
 
 	class Instrumentor
 	{
-	private:
-		std::mutex m_Mutex;
-		InstrumentationSession* m_CurrentSession;
-		std::ofstream m_OutputStream;
 	public:
-		Instrumentor()
-			: m_CurrentSession(nullptr)
-		{
-		}
+		Instrumentor(const Instrumentor&) = delete;
+		Instrumentor(Instrumentor&&) = delete;
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
@@ -49,6 +50,8 @@ namespace Real {
 				}
 				InternalEndSession();
 			}
+			m_OutputStream.open(filepath);
+
 			if (m_OutputStream.is_open())
 			{
 				m_CurrentSession = new InstrumentationSession({ name });
@@ -92,13 +95,22 @@ namespace Real {
 			}
 		}
 
-
 		static Instrumentor& Get()
 		{
 			static Instrumentor instance;
 			return instance;
 		}
 	private:
+		Instrumentor()
+			: m_CurrentSession(nullptr)
+		{
+		}
+
+		~Instrumentor()
+		{
+			EndSession();
+		}
+
 		void WriteHeader()
 		{
 			m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
@@ -111,6 +123,8 @@ namespace Real {
 			m_OutputStream.flush();
 		}
 
+		// Note: you must already own lock on m_Mutex before
+		// calling InternalEndSession()
 		void InternalEndSession()
 		{
 			if (m_CurrentSession)
@@ -121,6 +135,10 @@ namespace Real {
 				m_CurrentSession = nullptr;
 			}
 		}
+	private:
+		std::mutex m_Mutex;
+		InstrumentationSession* m_CurrentSession;
+		std::ofstream m_OutputStream;
 	};
 
 	class InstrumentationTimer
@@ -142,9 +160,10 @@ namespace Real {
 		{
 			auto endTimepoint = std::chrono::steady_clock::now();
 			auto highResStart = FloatingPointMicroseconds{ m_StartTimepoint.time_since_epoch() };
-			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - 
-				std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
+			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
+
 			Instrumentor::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() });
+
 			m_Stopped = true;
 		}
 	private:
@@ -152,6 +171,7 @@ namespace Real {
 		std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
 		bool m_Stopped;
 	};
+
 	namespace InstrumentorUtils {
 
 		template <size_t N>
@@ -185,8 +205,8 @@ namespace Real {
 #define RE_PROFILE 0
 #if RE_PROFILE
 // Resolve which function signature macro will be used. Note that this only
-	// is resolved when the (pre)compiler starts, so the syntax highlighting
-	// could mark the wrong one in your editor!
+// is resolved when the (pre)compiler starts, so the syntax highlighting
+// could mark the wrong one in your editor!
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
 #define RE_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
@@ -204,10 +224,13 @@ namespace Real {
 #else
 #define RE_FUNC_SIG "RE_FUNC_SIG unknown!"
 #endif
+
 #define RE_PROFILE_BEGIN_SESSION(name, filepath) ::Real::Instrumentor::Get().BeginSession(name, filepath)
 #define RE_PROFILE_END_SESSION() ::Real::Instrumentor::Get().EndSession()
-#define RE_PROFILE_SCOPE(name) constexpr auto fixedName = ::Real::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
-									::Real::InstrumentationTimer timer##__LINE__(fixedName.Data)
+#define RE_PROFILE_SCOPE_LINE2(name, line) constexpr auto fixedName##line = ::Real::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
+											   ::Real::InstrumentationTimer timer##line(fixedName##line.Data)
+#define RE_PROFILE_SCOPE_LINE(name, line) RE_PROFILE_SCOPE_LINE2(name, line)
+#define RE_PROFILE_SCOPE(name) RE_PROFILE_SCOPE_LINE(name, __LINE__)
 #define RE_PROFILE_FUNCTION() RE_PROFILE_SCOPE(RE_FUNC_SIG)
 #else
 #define RE_PROFILE_BEGIN_SESSION(name, filepath)

@@ -13,3 +13,9 @@
 [submodule "RealEngine/vendor/glm"]
 	path = RealEngine/vendor/glm
 	url = https://github.com/Dy111111/glm.git
+[submodule "RealEngine/vendor/ImGuizmo"]
+	path = RealEngine/vendor/ImGuizmo
+	url = https://github.com/Dy111111/ImGuizmo
+[submodule "RealEngine/vendor/yaml-cpp"]
+	path = RealEngine/vendor/yaml-cpp
+	url = https://github.com/Dy111111/yaml-cpp

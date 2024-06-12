@@ -4,6 +4,7 @@
 #include"Real/Core/Application.h"
 #include"Real/Core/Layer.h"
 #include"Real/Core/Log.h"
+#include"Real/Core/Assert.h"
 #include"Real/Core/Timestep.h"
 #include"Real/Core/Input.h"
 #include"Real/Core/KeyCodes.h"
@@ -14,6 +15,8 @@
 
 #include "Real/Scene/Scene.h"
 #include "Real/Scene/Components.h"
+#include "Real/Scene/Entity.h"
+#include "Real/Scene/ScriptableEntity.h"
 
 // ---Renderer------------------------
 #include"Real/Renderer/Renderer.h"

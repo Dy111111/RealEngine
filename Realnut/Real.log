@@ -1,5 +1,23 @@
-[16:27:08] [info] REAL: Creating window Realnut (1280, 720)
-[16:27:09] [info] REAL: OpenGL Info:
-[16:27:09] [info] REAL:   Vendor: NVIDIA Corporation
-[16:27:09] [info] REAL:   Renderer: NVIDIA GeForce RTX 3060/PCIe/SSE2
-[16:27:09] [info] REAL:   Version: 4.6.0 NVIDIA 516.94
+[22:49:43] [info] REAL: Creating window Real (1600, 900)
+[22:49:44] [info] REAL: OpenGL Info:
+[22:49:44] [info] REAL:   Vendor: NVIDIA Corporation
+[22:49:44] [info] REAL:   Renderer: NVIDIA GeForce RTX 3060/PCIe/SSE2
+[22:49:44] [info] REAL:   Version: 4.6.0 NVIDIA 516.94
+[22:49:44] [trace] REAL: OpenGLShader::Reflect - GL_VERTEX_SHADER assets/shaders/Texture.glsl
+[22:49:44] [trace] REAL:     1 uniform buffers
+[22:49:44] [trace] REAL:     0 resources
+[22:49:44] [trace] REAL: Uniform buffers:
+[22:49:44] [trace] REAL:   _47_49
+[22:49:44] [trace] REAL:     Size = 64
+[22:49:44] [trace] REAL:     Binding = 0
+[22:49:44] [trace] REAL:     Members = 1
+[22:49:44] [trace] REAL: OpenGLShader::Reflect - GL_FRAGMENT_SHADER assets/shaders/Texture.glsl
+[22:49:44] [trace] REAL:     0 uniform buffers
+[22:49:44] [trace] REAL:     1 resources
+[22:49:44] [trace] REAL: Uniform buffers:
+[22:49:44] [warning] REAL: Shader creation took 56.79321 ms
+[22:49:50] [trace] REAL: Deserializing scene 'Untitled'
+[22:49:50] [trace] REAL: Deserialized entity with ID = 12837192831273, name = Camera B
+[22:49:50] [trace] REAL: Deserialized entity with ID = 12837192831273, name = Camera A
+[22:49:50] [trace] REAL: Deserialized entity with ID = 12837192831273, name = Red Square
+[22:49:50] [trace] REAL: Deserialized entity with ID = 12837192831273, name = Green Square

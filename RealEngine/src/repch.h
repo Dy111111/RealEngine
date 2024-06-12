@@ -1,4 +1,12 @@
 #pragma once
+#include "Real/Core/PlatformDetection.h"
+
+#ifdef RE_PLATFORM_WINDOWS
+#ifndef NOMINMAX
+// See github.com/skypjack/entt/wiki/Frequently-Asked-Questions#warning-c4003-the-min-the-max-and-the-macro
+#define NOMINMAX
+#endif
+#endif
 
 #include <iostream>
 #include <memory>
@@ -12,7 +20,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-
+#include "Real/Core/Base.h"
 #include "Real/Core/Log.h"
 #include "Real/Debug/Instrumentor.h"
 #ifdef RE_PLATFORM_WINDOWS
