@@ -1,14 +1,19 @@
 #include "repch.h"
 #include "Real/Utils/PlatformUtils.h"
-
+#include "Real/Core/Application.h"
 #include <commdlg.h>
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include "Real/Core/Application.h"
+
 
 namespace Real {
+
+	float Time::GetTime()
+	{
+		return glfwGetTime();
+	}
 
 	std::string FileDialogs::OpenFile(const char* filter)
 	{

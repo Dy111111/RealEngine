@@ -19,3 +19,6 @@
 [submodule "RealEngine/vendor/yaml-cpp"]
 	path = RealEngine/vendor/yaml-cpp
 	url = https://github.com/Dy111111/yaml-cpp
+[submodule "RealEngine/vendor/box2d"]
+	path = RealEngine/vendor/box2d
+	url = https://github.com/Dy111111/box2d

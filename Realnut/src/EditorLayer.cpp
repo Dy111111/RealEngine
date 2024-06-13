@@ -1,18 +1,14 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "EditorLayer.h"
-
+#include "Real/Scene/SceneSerializer.h"
+#include "Real/Utils/PlatformUtils.h"
+#include "Real/Math/Math.h"
 #include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Real/Scene/SceneSerializer.h"
-
-#include "Real/Utils/PlatformUtils.h"
-
 #include "ImGuizmo.h"
-
-#include "Real/Math/Math.h"
 
 namespace Real {
 
@@ -28,6 +24,9 @@ namespace Real {
 		RE_PROFILE_FUNCTION();
 
 		m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
+		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
+		m_IconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
+		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
 
 		FramebufferSpecification fbSpec;
 		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -35,9 +34,11 @@ namespace Real {
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
-		m_ActiveScene = CreateRef<Scene>();
+		m_EditorScene = CreateRef<Scene>();
+		m_ActiveScene = m_EditorScene;
 
-		auto commandLineArgs = Application::Get().GetCommandLineArgs();
+
+		auto commandLineArgs = Application::Get().GetSpecification().CommandLineArgs;
 		if (commandLineArgs.Count > 1)
 		{
 			auto sceneFilePath = commandLineArgs[1];
@@ -46,59 +47,7 @@ namespace Real {
 		}
 
 		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
-#if 0
-		// Entity
-		auto square = m_ActiveScene->CreateEntity("Green Square");
-		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-
-		auto redSquare = m_ActiveScene->CreateEntity("Red Square");
-		redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-
-		m_SquareEntity = square;
-
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-		m_CameraEntity.AddComponent<CameraComponent>();
-
-		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-		cc.Primary = false;
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			virtual void OnCreate() override
-			{
-				auto& translation = GetComponent<TransformComponent>().Translation;
-				translation.x = rand() % 10 - 5.0f;
-			}
-
-			virtual void OnDestroy() override
-			{
-			}
-
-			virtual void OnUpdate(Timestep ts) override
-			{
-				auto& translation = GetComponent<TransformComponent>().Translation;
-
-				float speed = 5.0f;
-
-				if (Input::IsKeyPressed(Key::A))
-					translation.x -= speed * ts;
-				if (Input::IsKeyPressed(Key::D))
-					translation.x += speed * ts;
-				if (Input::IsKeyPressed(Key::W))
-					translation.y += speed * ts;
-				if (Input::IsKeyPressed(Key::S))
-					translation.y -= speed * ts;
-			}
-		};
-
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
-
-		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		Renderer2D::SetLineWidth(4.0f);
 	}
 
 	void EditorLayer::OnDetach()
@@ -121,11 +70,6 @@ namespace Real {
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		// Update
-		if (m_ViewportFocused)
-			m_CameraController.OnUpdate(ts);
-
-		m_EditorCamera.OnUpdate(ts);
 
 		// Render
 		Renderer2D::ResetStats();
@@ -136,8 +80,31 @@ namespace Real {
 		// Clear our entity ID attachment to -1
 		m_Framebuffer->ClearAttachment(1, -1);
 
-		// Update scene
-		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+		switch (m_SceneState)
+		{
+			case SceneState::Edit:
+			{
+				if (m_ViewportFocused)
+					m_CameraController.OnUpdate(ts);
+
+				m_EditorCamera.OnUpdate(ts);
+
+				m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+				break;
+			}
+			case SceneState::Simulate:
+			{
+				m_EditorCamera.OnUpdate(ts);
+
+				m_ActiveScene->OnUpdateSimulation(ts, m_EditorCamera);
+				break;
+			}
+			case SceneState::Play:
+			{
+				m_ActiveScene->OnUpdateRuntime(ts);
+				break;
+			}
+		}
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBounds[0].x;
@@ -152,7 +119,7 @@ namespace Real {
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
 		}
-
+		OnOverlayRender();
 		m_Framebuffer->Unbind();
 	}
 
@@ -223,6 +190,9 @@ namespace Real {
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 					OpenScene();
 
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					SaveScene();
+
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
 
@@ -250,6 +220,10 @@ namespace Real {
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
+		ImGui::End();
+
+		ImGui::Begin("Settings");
+		ImGui::Checkbox("Show physics colliders", &m_ShowPhysicsColliders);
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -335,20 +309,70 @@ namespace Real {
 
 		ImGui::End();
 		ImGui::PopStyleVar();
+		UI_Toolbar();
+		ImGui::End();
+	}
 
+	void EditorLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		auto& colors = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		bool toolbarEnabled = (bool)m_ActiveScene;
+
+		ImVec4 tintColor = ImVec4(1, 1, 1, 1);
+		if (!toolbarEnabled)
+			tintColor.w = 0.5f;
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		{
+			Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate) ? m_IconPlay : m_IconStop;
+			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled)
+			{
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate)
+					OnScenePlay();
+				else if (m_SceneState == SceneState::Play)
+					OnSceneStop();
+			}
+		}
+		ImGui::SameLine();
+		{
+			Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;		//ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled)
+			{
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play)
+					OnSceneSimulate();
+				else if (m_SceneState == SceneState::Simulate)
+					OnSceneStop();
+			}
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
 		ImGui::End();
 	}
 
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_CameraController.OnEvent(e);
-		m_EditorCamera.OnEvent(e);
+		if (m_SceneState == SceneState::Edit)
+		{
+			m_EditorCamera.OnEvent(e);
+		}
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent &event){
+		dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event) {
 			return this->OnKeyPressed(event);
 			});
-		dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent &event){
+		dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& event) {
 			return this->OnMouseButtonPressed(event);
 			});
 	}
@@ -356,7 +380,7 @@ namespace Real {
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 	{
 		// Shortcuts
-		if (e.GetRepeatCount() > 0)
+		if (e.IsRepeat())
 			return false;
 
 		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
@@ -380,8 +404,22 @@ namespace Real {
 		}
 		case Key::S:
 		{
-			if (control && shift)
-				SaveSceneAs();
+			if (control)
+			{
+				if (shift)
+					SaveSceneAs();
+				else
+					SaveScene();
+			}
+
+			break;
+		}
+
+		// Scene Commands
+		case Key::D:
+		{
+			if (control)
+				OnDuplicateEntity();
 
 			break;
 		}
@@ -414,6 +452,71 @@ namespace Real {
 		}
 	}
 
+
+	void EditorLayer::OnOverlayRender()
+	{
+		if (m_SceneState == SceneState::Play)
+		{
+			Entity camera = m_ActiveScene->GetPrimaryCameraEntity();
+			if (!camera)
+				return;
+
+			Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera, camera.GetComponent<TransformComponent>().GetTransform());
+		}
+		else
+		{
+			Renderer2D::BeginScene(m_EditorCamera);
+		}
+
+		if (m_ShowPhysicsColliders)
+		{
+			// Box Colliders
+			{
+				auto view = m_ActiveScene->GetAllEntitiesWith<TransformComponent, BoxCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, bc2d] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+
+					glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+				}
+			}
+
+			// Circle Colliders
+			{
+				auto view = m_ActiveScene->GetAllEntitiesWith<TransformComponent, CircleCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, cc2d] = view.get<TransformComponent, CircleCollider2DComponent>(entity);
+
+					glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+				}
+			}
+		}
+
+		// Draw selected entity outline 
+		if (Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity())
+		{
+			const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
+			Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+		}
+
+		Renderer2D::EndScene();
+	}
+
+
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		if (e.GetMouseButton() == Mouse::ButtonLeft)//зѓМќбЁжа
@@ -429,6 +532,7 @@ namespace Real {
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		m_EditorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -440,12 +544,33 @@ namespace Real {
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_ActiveScene = CreateRef<Scene>();
-		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
+		if (path.extension().string() != ".hazel")
+		{
+			RE_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
 
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize(path.string());
+		Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.Deserialize(path.string()))
+		{
+			m_EditorScene = newScene;
+			m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_SceneHierarchyPanel.SetContext(m_EditorScene);
+
+			m_ActiveScene = m_EditorScene;
+			m_EditorScenePath = path;
+		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (!m_EditorScenePath.empty())
+			SerializeScene(m_ActiveScene, m_EditorScenePath);
+		else
+			SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
@@ -453,9 +578,67 @@ namespace Real {
 		std::string filepath = FileDialogs::SaveFile("Real Scene (*.hazel)\0*.hazel\0");
 		if (!filepath.empty())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Serialize(filepath);
+			SerializeScene(m_ActiveScene, filepath);
+			m_EditorScenePath = filepath;
 		}
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.Serialize(path.string());
+	}
+
+	void EditorLayer::OnScenePlay()
+	{
+		if (m_SceneState == SceneState::Simulate)
+			OnSceneStop();
+
+		m_SceneState = SceneState::Play;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnRuntimeStart();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OnSceneSimulate()
+	{
+		if (m_SceneState == SceneState::Play)
+			OnSceneStop();
+
+		m_SceneState = SceneState::Simulate;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnSimulationStart();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OnSceneStop()
+	{
+		RE_CORE_ASSERT(m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulate);
+
+		if (m_SceneState == SceneState::Play)
+			m_ActiveScene->OnRuntimeStop();
+		else if (m_SceneState == SceneState::Simulate)
+			m_ActiveScene->OnSimulationStop();
+
+		m_SceneState = SceneState::Edit;
+
+		m_ActiveScene = m_EditorScene;
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity)
+			m_EditorScene->DuplicateEntity(selectedEntity);
 	}
 
 }

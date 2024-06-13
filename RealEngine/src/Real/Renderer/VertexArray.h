@@ -1,7 +1,6 @@
 #pragma once
-#include <memory>
 #include "Real/Renderer/Buffer.h"
-
+#include <memory>
 namespace Real {
 
 	class VertexArray

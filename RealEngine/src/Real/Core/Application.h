@@ -20,10 +20,18 @@ namespace Real {
 			return Args[index];
 		}
 	};
+
+	struct ApplicationSpecification
+	{
+		std::string Name = "Real Application";
+		std::string WorkingDirectory;
+		ApplicationCommandLineArgs CommandLineArgs;
+	};
+
 	class Application
 	{
 	public:
-		Application(const std::string& name = "Real App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+		Application(const ApplicationSpecification& specification);
 		virtual ~Application();
 		
 		void OnEvent(Event& e);
@@ -34,7 +42,7 @@ namespace Real {
 
 		static Application& Get() { return *s_Instance; }
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_CommandLineArgs; }
+		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 
 		void Close();
 	private:
@@ -42,7 +50,7 @@ namespace Real {
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		void Run();
-		ApplicationCommandLineArgs m_CommandLineArgs;
+		ApplicationSpecification m_Specification;
 		Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;

@@ -1,8 +1,7 @@
 #pragma once
-#include <functional>
 #include "Real/Debug/Instrumentor.h"
 #include "Real/Core/Base.h"
-
+#include <functional>
 namespace Real {
 
 	enum class EventType

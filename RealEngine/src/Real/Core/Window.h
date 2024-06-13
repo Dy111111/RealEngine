@@ -1,8 +1,7 @@
 #pragma once
-#include <sstream>
 #include "Real/Core/Base.h"
 #include "Real/Events/Event.h"
-
+#include <sstream>
 namespace Real {
 
 	struct WindowProps

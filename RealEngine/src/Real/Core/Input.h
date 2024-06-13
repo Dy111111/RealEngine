@@ -1,7 +1,7 @@
 #pragma once
-#include <glm/glm.hpp>
 #include "Real/Core/KeyCodes.h"
 #include "Real/Core/MouseCodes.h"
+#include <glm/glm.hpp>
 namespace Real {
 
 	class Input

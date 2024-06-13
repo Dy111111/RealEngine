@@ -8,20 +8,21 @@ namespace Real {
 	class Realnut : public Application
 	{
 	public:
-		Realnut(ApplicationCommandLineArgs args)
-			: Application("Real", args)
+		Realnut(const ApplicationSpecification& spec)
+			: Application(spec)
 		{
 			PushLayer(new EditorLayer());
 		}
 
-		~Realnut()
-		{
-		}
 	};
 
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new Realnut(args);
+		ApplicationSpecification spec;
+		spec.Name = "Realnut";
+		spec.CommandLineArgs = args;
+
+		return new Realnut(spec);
 	}
 
 }

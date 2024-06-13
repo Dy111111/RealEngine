@@ -34,6 +34,7 @@ project "RealEngine"
 	{
 		"src",
 		"vendor/spdlog/include",
+		"%{IncludeDir.box2d}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
@@ -47,6 +48,7 @@ project "RealEngine"
 
 	links
 	{
+		"box2d",
 		"GLFW",
 		"Glad",
 		"ImGui",
