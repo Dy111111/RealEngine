@@ -29,6 +29,16 @@ group "Dependencies"
 	include "RealEngine/vendor/yaml-cpp"
 group ""
 
-include "RealEngine"
-include "Sandbox"
-include "Realnut"
+
+group "Core"
+	include "RealEngine"
+	include "Real-ScriptCore"
+group ""
+
+group "Tools"
+	include "Realnut"
+group ""
+
+group "Misc"
+	include "Sandbox"
+group ""

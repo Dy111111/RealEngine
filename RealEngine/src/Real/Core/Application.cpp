@@ -2,6 +2,7 @@
 #include "Real/Core/Application.h"
 #include "Real/Core/Log.h"
 #include "Real/Renderer/Renderer.h"
+#include "Real/Scripting/ScriptEngine.h"
 #include"Real/Core/Input.h"
 #include"Real/Utils/PlatformUtils.h"
 
@@ -24,6 +25,7 @@ namespace Real {
 			this->OnEvent(event);
 			});
 		Renderer::Init();
+		ScriptEngine::Init();
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
@@ -32,6 +34,7 @@ namespace Real {
 	{
 		RE_PROFILE_FUNCTION();
 		Renderer::Shutdown();
+		ScriptEngine::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -51,6 +54,13 @@ namespace Real {
 	{
 		m_Running = false;
 	}
+	void Application::SubmitToMainThread(const std::function<void()>& function)
+	{
+		std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+
+		m_MainThreadQueue.emplace_back(function);
+	}
+
 	void Application::OnEvent(Event& e)
 	{
 		RE_PROFILE_FUNCTION();
@@ -77,6 +87,7 @@ namespace Real {
 			float time = Time::GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
+			ExecuteMainThreadQueue();
 
 			if (!m_Minimized)
 			{
@@ -119,5 +130,14 @@ namespace Real {
 	{
 		m_Running = false;
 		return true;
+	}
+	void Application::ExecuteMainThreadQueue()
+	{
+		std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+
+		for (auto& func : m_MainThreadQueue)
+			func();
+
+		m_MainThreadQueue.clear();
 	}
 }

@@ -18,6 +18,7 @@ project "Realnut"
 		"%{wks.location}/RealEngine/vendor/spdlog/include",
 		"%{wks.location}/RealEngine/src",
 		"%{wks.location}/RealEngine/vendor",
+		"%{IncludeDir.filewatch}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
