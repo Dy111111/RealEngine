@@ -19,17 +19,44 @@
     <Filter Include="src\Real\Core">
       <UniqueIdentifier>{F868E3E1-6429-5F18-2D64-A89599E3A3F4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Real\Debug">
+      <UniqueIdentifier>{16E35C1E-02B1-5024-EB44-C14AD7B12C89}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Real\Events">
       <UniqueIdentifier>{849883ED-F023-F1B1-F934-74A6653F4DB2}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Real\ImGui">
       <UniqueIdentifier>{CA4DBB1E-B61B-AF24-9FAF-1F4B8B1C8B89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Real\Math">
+      <UniqueIdentifier>{79A9E8E1-E569-6418-AEA4-AD951A24A9F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Real\Physics">
+      <UniqueIdentifier>{12847BCD-FE7C-9A1F-27AF-7FA413077A2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Real\Project">
+      <UniqueIdentifier>{E62415E4-D21D-3436-FB4F-19BBE7A71342}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Real\Renderer">
       <UniqueIdentifier>{46D8C653-B2EE-C4E9-FB65-500B67BB9571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Real\Scene">
+      <UniqueIdentifier>{BD456B1F-A913-5F25-92A7-CF4B7E143B8A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Real\Scripting">
+      <UniqueIdentifier>{A29DF5A8-8E81-B6FE-F7E1-B051E3E4A080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Real\UI">
+      <UniqueIdentifier>{CD6FD1A7-3925-4A9D-C219-44742ECE40A1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Real\Utils">
+      <UniqueIdentifier>{00DA981F-ECA7-8C25-D53B-FD4BC1A8688A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\ImGuizmo">
+      <UniqueIdentifier>{73BF7F4C-DF4A-ED10-E85B-700554664911}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\glm">
       <UniqueIdentifier>{829FC5A8-6E57-07F6-D75E-E051C335A2E6}</UniqueIdentifier>
@@ -60,6 +87,9 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -69,11 +99,11 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
+    <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
-      <Filter>src\Platform\Windows</Filter>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
@@ -84,10 +114,19 @@
     <ClInclude Include="src\Real\Core\Application.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Core\Core.h">
+    <ClInclude Include="src\Real\Core\Assert.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Base.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Buffer.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Core\EntryPoint.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\FileSystem.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Core\Input.h">
@@ -105,14 +144,26 @@
     <ClInclude Include="src\Real\Core\Log.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Core\MouseButtonCodes.h">
+    <ClInclude Include="src\Real\Core\MouseCodes.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\PlatformDetection.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Core\Timer.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Core\Timestep.h">
       <Filter>src\Real\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Core\UUID.h">
+      <Filter>src\Real\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Real\Core\Window.h">
       <Filter>src\Real\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Debug\Instrumentor.h">
+      <Filter>src\Real\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Events\ApplicationEvent.h">
       <Filter>src\Real\Events</Filter>
@@ -129,10 +180,37 @@
     <ClInclude Include="src\Real\ImGui\ImGuiLayer.h">
       <Filter>src\Real\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Math\Math.h">
+      <Filter>src\Real\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Physics\Physics2D.h">
+      <Filter>src\Real\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Project\Project.h">
+      <Filter>src\Real\Project</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Project\ProjectSerializer.h">
+      <Filter>src\Real\Project</Filter>
+    </ClInclude>
     <ClInclude Include="src\Real\Renderer\Buffer.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Renderer\Camera.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Renderer\EditorCamera.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Renderer\Font.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Renderer\Framebuffer.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Real\Renderer\GraphicsContext.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Renderer\MSDFData.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Real\Renderer\OrthographicCamera.h">
@@ -147,6 +225,9 @@
     <ClInclude Include="src\Real\Renderer\Renderer.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Renderer\Renderer2D.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Real\Renderer\RendererAPI.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
@@ -156,11 +237,47 @@
     <ClInclude Include="src\Real\Renderer\Texture.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Renderer\UniformBuffer.h">
+      <Filter>src\Real\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Real\Renderer\VertexArray.h">
       <Filter>src\Real\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Real\Scene\Components.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scene\Entity.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scene\Scene.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scene\SceneCamera.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scene\SceneSerializer.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scene\ScriptableEntity.h">
+      <Filter>src\Real\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scripting\ScriptEngine.h">
+      <Filter>src\Real\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Scripting\ScriptGlue.h">
+      <Filter>src\Real\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\UI\UI.h">
+      <Filter>src\Real\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Real\Utils\PlatformUtils.h">
+      <Filter>src\Real\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\repch.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
+      <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
       <Filter>vendor\glm\glm</Filter>
@@ -1413,13 +1530,15 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Real\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
@@ -1431,16 +1550,25 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Core\Application.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Core\FileSystem.cpp">
       <Filter>src\Real\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Core\Layer.cpp">
@@ -1452,13 +1580,40 @@
     <ClCompile Include="src\Real\Core\Log.cpp">
       <Filter>src\Real\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Real\Core\UUID.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Core\Window.cpp">
+      <Filter>src\Real\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Real\ImGui\ImGuiBuild.cpp">
       <Filter>src\Real\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\ImGui\ImGuiLayer.cpp">
       <Filter>src\Real\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="src\Real\Math\Math.cpp">
+      <Filter>src\Real\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Project\Project.cpp">
+      <Filter>src\Real\Project</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Project\ProjectSerializer.cpp">
+      <Filter>src\Real\Project</Filter>
+    </ClCompile>
     <ClCompile Include="src\Real\Renderer\Buffer.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Renderer\EditorCamera.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Renderer\Font.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Renderer\Framebuffer.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Renderer\GraphicsContext.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Real\Renderer\OrthographicCamera.cpp">
@@ -1473,6 +1628,9 @@
     <ClCompile Include="src\Real\Renderer\Renderer.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Real\Renderer\Renderer2D.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Real\Renderer\RendererAPI.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
@@ -1482,16 +1640,38 @@
     <ClCompile Include="src\Real\Renderer\Texture.cpp">
       <Filter>src\Real\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Real\Renderer\UniformBuffer.cpp">
+      <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Real\Renderer\VertexArray.cpp">
       <Filter>src\Real\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scene\Entity.cpp">
+      <Filter>src\Real\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scene\Scene.cpp">
+      <Filter>src\Real\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scene\SceneCamera.cpp">
+      <Filter>src\Real\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scene\SceneSerializer.cpp">
+      <Filter>src\Real\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scripting\ScriptEngine.cpp">
+      <Filter>src\Real\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Real\Scripting\ScriptGlue.cpp">
+      <Filter>src\Real\Scripting</Filter>
     </ClCompile>
     <ClCompile Include="src\repch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <Filter>vendor\ImGuizmo</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Real\Renderer\Renderer2D.cpp" />
-    <ClCompile Include="src\Real\Renderer\GraphicsContext.cpp" />
   </ItemGroup>
 </Project>

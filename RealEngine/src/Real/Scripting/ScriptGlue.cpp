@@ -9,12 +9,24 @@
 #include "Real/Scene/Scene.h"
 #include "Real/Scene/Entity.h"
 
+#include "Real/Physics/Physics2D.h"
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
 
 #include "box2d/b2_body.h"
 
 namespace Real {
+	namespace Utils {
+
+		std::string MonoStringToString(MonoString* string)
+		{
+			char* cStr = mono_string_to_utf8(string);
+			std::string str(cStr);
+			mono_free(cStr);
+			return str;
+		}
+
+	}
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> s_EntityHasComponentFuncs;
 
@@ -22,9 +34,7 @@ namespace Real {
 
 	static void NativeLog(MonoString* string, int parameter)
 	{
-		char* cStr = mono_string_to_utf8(string);
-		std::string str(cStr);
-		mono_free(cStr);
+		std::string str = Utils::MonoStringToString(string);
 		std::cout << str << ", " << parameter << std::endl;
 	}
 
@@ -116,6 +126,140 @@ namespace Real {
 		body->ApplyLinearImpulseToCenter(b2Vec2(impulse->x, impulse->y), wake);
 	}
 
+	static void Rigidbody2DComponent_GetLinearVelocity(UUID entityID, glm::vec2* outLinearVelocity)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+
+		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		const b2Vec2& linearVelocity = body->GetLinearVelocity();
+		*outLinearVelocity = glm::vec2(linearVelocity.x, linearVelocity.y);
+	}
+
+	static Rigidbody2DComponent::BodyType Rigidbody2DComponent_GetType(UUID entityID)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+
+		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		return Utils::Rigidbody2DTypeFromBox2DBody(body->GetType());
+	}
+
+	static void Rigidbody2DComponent_SetType(UUID entityID, Rigidbody2DComponent::BodyType bodyType)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+
+		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		body->SetType(Utils::Rigidbody2DTypeToBox2DBody(bodyType));
+	}
+
+	static MonoString* TextComponent_GetText(UUID entityID)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		return ScriptEngine::CreateString(tc.TextString.c_str());
+	}
+
+	static void TextComponent_SetText(UUID entityID, MonoString* textString)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		tc.TextString = Utils::MonoStringToString(textString);
+	}
+
+	static void TextComponent_GetColor(UUID entityID, glm::vec4* color)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		*color = tc.Color;
+	}
+
+	static void TextComponent_SetColor(UUID entityID, glm::vec4* color)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		tc.Color = *color;
+	}
+
+	static float TextComponent_GetKerning(UUID entityID)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		return tc.Kerning;
+	}
+
+	static void TextComponent_SetKerning(UUID entityID, float kerning)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		tc.Kerning = kerning;
+	}
+
+	static float TextComponent_GetLineSpacing(UUID entityID)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		return tc.LineSpacing;
+	}
+
+	static void TextComponent_SetLineSpacing(UUID entityID, float lineSpacing)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		RE_CORE_ASSERT(scene);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		RE_CORE_ASSERT(entity);
+		RE_CORE_ASSERT(entity.HasComponent<TextComponent>());
+
+		auto& tc = entity.GetComponent<TextComponent>();
+		tc.LineSpacing = lineSpacing;
+	}
+
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -169,6 +313,19 @@ namespace Real {
 
 		RE_ADD_INTERNAL_CALL(Rigidbody2DComponent_ApplyLinearImpulse);
 		RE_ADD_INTERNAL_CALL(Rigidbody2DComponent_ApplyLinearImpulseToCenter);
+
+		RE_ADD_INTERNAL_CALL(Rigidbody2DComponent_GetLinearVelocity);
+		RE_ADD_INTERNAL_CALL(Rigidbody2DComponent_GetType);
+		RE_ADD_INTERNAL_CALL(Rigidbody2DComponent_SetType);
+
+		RE_ADD_INTERNAL_CALL(TextComponent_GetText);
+		RE_ADD_INTERNAL_CALL(TextComponent_SetText);
+		RE_ADD_INTERNAL_CALL(TextComponent_GetColor);
+		RE_ADD_INTERNAL_CALL(TextComponent_SetColor);
+		RE_ADD_INTERNAL_CALL(TextComponent_GetKerning);
+		RE_ADD_INTERNAL_CALL(TextComponent_SetKerning);
+		RE_ADD_INTERNAL_CALL(TextComponent_GetLineSpacing);
+		RE_ADD_INTERNAL_CALL(TextComponent_SetLineSpacing);
 
 		RE_ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

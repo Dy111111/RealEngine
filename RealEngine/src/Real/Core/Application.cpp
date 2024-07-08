@@ -21,11 +21,10 @@ namespace Real {
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
 		m_Window = Window::Create(WindowProps(m_Specification.Name));
-		m_Window->SetEventCallback([this](Event& event) {
-			this->OnEvent(event);
-			});
+		//m_Window->SetEventCallback([this](Event& event) {
+			//this->OnEvent(event);
+			//});
 		Renderer::Init();
-		ScriptEngine::Init();
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 

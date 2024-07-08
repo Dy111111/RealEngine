@@ -4,7 +4,7 @@
 #include"Real/Renderer/Texture.h"
 #include "Real/Renderer/Camera.h"
 #include "Real/Renderer/EditorCamera.h"
-
+#include "Real/Renderer/Font.h"
 #include "Real/Scene/Components.h"
 namespace Real {
 
@@ -43,6 +43,15 @@ namespace Real {
 		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID = -1);
 		static void DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
 		static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
+		
+		struct TextParams
+		{
+			glm::vec4 Color{ 1.0f };
+			float Kerning = 0.0f;
+			float LineSpacing = 0.0f;
+		};
+		static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID = -1);
+		static void DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID = -1);
 		static float GetLineWidth();
 		static void SetLineWidth(float width);
 		// Stats

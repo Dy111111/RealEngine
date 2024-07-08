@@ -16,6 +16,7 @@
 #include "Real/Core/Timer.h"
 #include "Real/Core/Buffer.h"
 #include "Real/Core/FileSystem.h"
+#include "Real/Project/Project.h"
 
 namespace Real {
 
@@ -132,8 +133,11 @@ namespace Real {
 
 		Scope<filewatch::FileWatch<std::string>> AppAssemblyFileWatcher;
 		bool AssemblyReloadPending = false;
-
+#ifdef RE_DEBUG
 		bool EnableDebugging = true;
+#else
+		bool EnableDebugging = false;
+#endif
 
 		// Runtime
 
@@ -169,7 +173,8 @@ namespace Real {
 			RE_CORE_ERROR("[ScriptEngine] Could not load Real-ScriptCore assembly.");
 			return;
 		}
-		status = LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
+		auto scriptModulePath = Project::GetAssetDirectory() / Project::GetActive()->GetConfig().ScriptModulePath;
+		status = LoadAppAssembly(scriptModulePath);
 		if (!status)
 		{
 			RE_CORE_ERROR("[ScriptEngine] Could not load app assembly.");
@@ -435,6 +440,10 @@ namespace Real {
 	{
 		RE_CORE_ASSERT(s_Data->EntityInstances.find(uuid) != s_Data->EntityInstances.end());
 		return s_Data->EntityInstances.at(uuid)->GetManagedObject();
+	}
+	MonoString* ScriptEngine::CreateString(const char* string)
+	{
+		return mono_string_new(s_Data->AppDomain, string);
 	}
 
 	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)

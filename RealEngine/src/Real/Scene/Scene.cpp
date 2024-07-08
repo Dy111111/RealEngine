@@ -5,7 +5,7 @@
 #include "ScriptableEntity.h"
 #include "Real/Scripting/ScriptEngine.h"
 #include "Real/Renderer/Renderer2D.h"
-
+#include "Real/Physics/Physics2D.h"
 #include <glm/glm.hpp>
 
 #include "Entity.h"
@@ -18,18 +18,6 @@
 
 namespace Real {
 
-	static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType)
-	{
-		switch (bodyType)
-		{
-		case Rigidbody2DComponent::BodyType::Static:    return b2_staticBody;
-		case Rigidbody2DComponent::BodyType::Dynamic:   return b2_dynamicBody;
-		case Rigidbody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
-		}
-
-		RE_CORE_ASSERT(false, "Unknown body type");
-		return b2_staticBody;
-	}
 
 	Scene::Scene()
 	{
@@ -166,8 +154,8 @@ namespace Real {
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		m_Registry.destroy(entity);
 		m_EntityMap.erase(entity.GetUUID());
+		m_Registry.destroy(entity);
 	}
 
 	void Scene::OnUpdateRuntime(Timestep ts)
@@ -264,6 +252,16 @@ namespace Real {
 					Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
 				}
 			}
+			// Draw text
+			{
+				auto view = m_Registry.view<TransformComponent, TextComponent>();
+				for (auto entity : view)
+				{
+					auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+
+					Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
+				}
+			}
 
 			Renderer2D::EndScene();
 		}
@@ -341,10 +339,13 @@ namespace Real {
 		m_StepFrames = frames;
 	}
 
-	void Scene::DuplicateEntity(Entity entity)
+	Entity Scene::DuplicateEntity(Entity entity)
 	{
-		Entity newEntity = CreateEntity(entity.GetName());
+		// Copy name because we're going to modify component data structure
+		std::string name = entity.GetName();
+		Entity newEntity = CreateEntity(name);
 		CopyComponentIfExists(AllComponents{}, newEntity, entity);
+		return newEntity;
 	}
 
 	Entity Scene::FindEntityByName(std::string_view name)
@@ -380,7 +381,7 @@ namespace Real {
 			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
 			b2BodyDef bodyDef;
-			bodyDef.type = Rigidbody2DTypeToBox2DBody(rb2d.Type);
+			bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
 			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
 			bodyDef.angle = transform.Rotation.z;
 
@@ -393,7 +394,7 @@ namespace Real {
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
 				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &boxShape;
@@ -452,6 +453,16 @@ namespace Real {
 				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 
 				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+			}
+		}
+		// Draw text
+		{
+			auto view = m_Registry.view<TransformComponent, TextComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+
+				Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
 			}
 		}
 
@@ -520,6 +531,11 @@ namespace Real {
 
 	template<>
 	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 	{
 	}
 }

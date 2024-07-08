@@ -27,6 +27,7 @@ group "Dependencies"
 	include "RealEngine/vendor/Glad"
 	include "RealEngine/vendor/imgui"
 	include "RealEngine/vendor/yaml-cpp"
+	include "RealEngine/vendor/msdf-atlas-gen"
 group ""
 
 

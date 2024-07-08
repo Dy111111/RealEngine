@@ -5,6 +5,7 @@
 #include "Components.h"
 #include "Real/Scripting/ScriptEngine.h"
 #include "Real/Core/UUID.h"
+#include "Real/Project/Project.h"
 #include <fstream>
 //#define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
@@ -349,6 +350,20 @@ namespace Real {
 
 			out << YAML::EndMap; // CircleCollider2DComponent
 		}
+		if (entity.HasComponent<TextComponent>())
+		{
+			out << YAML::Key << "TextComponent";
+			out << YAML::BeginMap; // TextComponent
+
+			auto& textComponent = entity.GetComponent<TextComponent>();
+			out << YAML::Key << "TextString" << YAML::Value << textComponent.TextString;
+			// TODO: textComponent.FontAsset
+			out << YAML::Key << "Color" << YAML::Value << textComponent.Color;
+			out << YAML::Key << "Kerning" << YAML::Value << textComponent.Kerning;
+			out << YAML::Key << "LineSpacing" << YAML::Value << textComponent.LineSpacing;
+
+			out << YAML::EndMap; // TextComponent
+		}
 
 		out << YAML::EndMap; // Entity
 	}
@@ -506,7 +521,11 @@ namespace Real {
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
 					if (spriteRendererComponent["TexturePath"])
-						src.Texture = Texture2D::Create(spriteRendererComponent["TexturePath"].as<std::string>());
+					{
+						std::string texturePath = spriteRendererComponent["TexturePath"].as<std::string>();
+						auto path = Project::GetAssetFileSystemPath(texturePath);
+						src.Texture = Texture2D::Create(path.string());
+					}
 
 					if (spriteRendererComponent["TilingFactor"])
 						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
@@ -551,6 +570,17 @@ namespace Real {
 					cc2d.Friction = circleCollider2DComponent["Friction"].as<float>();
 					cc2d.Restitution = circleCollider2DComponent["Restitution"].as<float>();
 					cc2d.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+				}
+
+				auto textComponent = entity["TextComponent"];
+				if (textComponent)
+				{
+					auto& tc = deserializedEntity.AddComponent<TextComponent>();
+					tc.TextString = textComponent["TextString"].as<std::string>();
+					// tc.FontAsset // TODO
+					tc.Color = textComponent["Color"].as<glm::vec4>();
+					tc.Kerning = textComponent["Kerning"].as<float>();
+					tc.LineSpacing = textComponent["LineSpacing"].as<float>();
 				}
 			}
 		}

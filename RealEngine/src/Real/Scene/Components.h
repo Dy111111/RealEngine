@@ -3,6 +3,7 @@
 #include "SceneCamera.h"
 #include "Real/Core/UUID.h"
 #include "Real/Renderer/Texture.h"
+#include "Real/Renderer/Font.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -87,6 +88,14 @@ namespace Real {
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;
 	};
+	struct TextComponent
+	{
+		std::string TextString;
+		Ref<Font> FontAsset = Font::GetDefault();
+		glm::vec4 Color{ 1.0f };
+		float Kerning = 0.0f;
+		float LineSpacing = 0.0f;
+	};
 
 	// Forward declaration
 	class ScriptableEntity;
@@ -165,6 +174,6 @@ namespace Real {
 		ComponentGroup<TransformComponent, SpriteRendererComponent,
 		CircleRendererComponent, CameraComponent, ScriptComponent,
 		NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
-		CircleCollider2DComponent>;
+		CircleCollider2DComponent, TextComponent > ;
 
 }

@@ -15,6 +15,7 @@
 
 #include "Real/Scene/Scene.h"
 #include "Real/Scene/Components.h"
+#include "Real/Project/Project.h"
 #include "Real/Scene/Entity.h"
 #include "Real/Scene/ScriptableEntity.h"
 
